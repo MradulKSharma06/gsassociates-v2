@@ -4,7 +4,7 @@ import { CtaBanner } from "@/components/home/CtaBanner";
 import { services } from "@/data/services";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import { ArchitecturalButton } from "@/components/ui/ArchitecturalButton";
-import { ServiceBlueprintGraphic } from "@/components/services/ServiceBlueprintGraphic";
+import { AbstractGeometricGraphic } from "@/components/services/AbstractGeometricGraphic";
 
 export const metadata: Metadata = {
     title: "Services",
@@ -60,8 +60,8 @@ export default function ServicesPage() {
                                         </h2>
                                     </div>
 
-                                    {/* Architectural CAD Blueprint Schematic (Fills the beige area with engineering graphics) */}
-                                    <ServiceBlueprintGraphic category={svc.category || svc.title} />
+                                    {/* Minimalist Abstract Vector Shape Artwork */}
+                                    <AbstractGeometricGraphic index={i} />
 
                                     <div className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between text-xs font-mono-tech text-slate-500">
                                         <span>SPEC: IRC / PWD</span>

@@ -14,7 +14,7 @@ const secondary = featured.slice(1, 3);
 
 export function FeaturedProjects() {
     return (
-        <section className="section-padding bg-[#FAF9F6] border-b border-slate-200/80">
+        <section className="section-padding bg-transparent border-b border-slate-200/80 relative z-10">
             <div className="container-site">
                 {/* Section Header */}
                 <MotionWrapper direction="up">
@@ -31,7 +31,7 @@ export function FeaturedProjects() {
                         </div>
                         <Link
                             href="/projects"
-                            className="btn btn-outline shrink-0 self-start sm:self-auto group"
+                            className="btn btn-outline shrink-0 self-start sm:self-auto group bg-white/80 backdrop-blur-md"
                         >
                             <span>All 200+ Projects</span>
                             <ArrowRight
@@ -50,10 +50,10 @@ export function FeaturedProjects() {
                             <Tilt3DCard maxTilt={5} className="h-full">
                                 <Link
                                     href={`/projects/${flagship.slug}`}
-                                    className="group flex flex-col h-full rounded-2xl bg-white border border-slate-200/90 shadow-matte-sm hover:shadow-matte-lg hover:border-slate-300 transition-all duration-300 overflow-hidden"
+                                    className="group flex flex-col h-full rounded-2xl bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-matte-sm hover:shadow-matte-lg hover:border-slate-300 hover:bg-white/90 transition-all duration-300 overflow-hidden"
                                 >
                                 {/* Top Technical CAD Blueprint Header */}
-                                <div className="p-7 sm:p-9 bg-[#F4F5F7] border-b border-slate-200/80 relative overflow-hidden">
+                                <div className="p-7 sm:p-9 bg-white/60 backdrop-blur-md border-b border-slate-200/80 relative overflow-hidden">
                                     {/* Blueprint CAD Fine Grid */}
                                     <svg
                                         className="absolute inset-0 w-full h-full opacity-30"
@@ -164,7 +164,7 @@ export function FeaturedProjects() {
                                 <Tilt3DCard maxTilt={5} className="h-full">
                                     <Link
                                         href={`/projects/${project.slug}`}
-                                        className="group flex flex-col justify-between h-full p-6 sm:p-7 rounded-2xl bg-white border border-slate-200/90 shadow-matte-sm hover:shadow-matte-lg hover:border-slate-300 transition-all duration-300"
+                                        className="group flex flex-col justify-between h-full p-6 sm:p-7 rounded-2xl bg-white/80 backdrop-blur-xl border border-slate-200/80 shadow-matte-sm hover:shadow-matte-lg hover:border-slate-300 hover:bg-white/90 transition-all duration-300"
                                     >
                                     <div>
                                         <div className="flex items-center justify-between mb-4">

@@ -17,12 +17,12 @@ const pillars = [
 
 export function AboutSnippet() {
     return (
-        <section className="section-padding bg-[#FAF9F6] border-b border-slate-200/80">
+        <section className="section-padding bg-transparent border-b border-slate-200/80 relative z-10">
             <div className="container-site">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
                     {/* Left: Architectural Drafting Block */}
                     <MotionWrapper direction="left" className="lg:col-span-5 relative">
-                        <div className="rounded-2xl border border-slate-200 bg-white p-8 relative overflow-hidden shadow-matte-sm min-h-[380px] flex flex-col justify-between">
+                        <div className="rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-xl p-8 relative overflow-hidden shadow-matte-sm min-h-[380px] flex flex-col justify-between hover:bg-white/90 transition-all">
                             {/* Blueprint CAD hatching */}
                             <svg
                                 className="absolute inset-0 w-full h-full opacity-20"

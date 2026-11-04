@@ -33,7 +33,7 @@ export default function ServicesPage() {
             </section>
 
             {/* Services Detailed List */}
-            <section className="section-padding bg-white border-b border-slate-200/80">
+            <section className="section-padding bg-transparent border-b border-slate-200/80 relative z-10">
                 <div className="container-site flex flex-col gap-8">
                     {services.map((svc, i) => {
                         const isReversed = i % 2 !== 0;
@@ -42,12 +42,12 @@ export default function ServicesPage() {
                             <div
                                 key={svc.id}
                                 id={svc.id}
-                                className={`grid grid-cols-1 lg:grid-cols-12 rounded-2xl overflow-hidden border border-slate-200 shadow-matte-sm bg-white ${
+                                className={`grid grid-cols-1 lg:grid-cols-12 rounded-2xl overflow-hidden border border-slate-200/80 shadow-matte-sm bg-white/80 backdrop-blur-xl hover:shadow-matte-md hover:bg-white/90 transition-all ${
                                     isReversed ? "lg:direction-rtl" : ""
                                 }`}
                             >
                                 {/* Left/Side Panel */}
-                                <div className="lg:col-span-4 p-8 bg-[#FAF9F6] border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col justify-between relative overflow-hidden">
+                                <div className="lg:col-span-4 p-8 bg-[#FAF9F6]/80 backdrop-blur-md border-b lg:border-b-0 lg:border-r border-slate-200/80 flex flex-col justify-between relative overflow-hidden">
                                     <div>
                                         <div className="text-[10px] font-mono-tech font-bold uppercase tracking-widest text-[#185FA5] mb-2">
                                             {svc.category}
@@ -63,14 +63,14 @@ export default function ServicesPage() {
                                     {/* Minimalist Abstract Vector Shape Artwork */}
                                     <AbstractGeometricGraphic index={i} />
 
-                                    <div className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between text-xs font-mono-tech text-slate-500">
+                                    <div className="mt-4 pt-4 border-t border-slate-200/80 flex items-center justify-between text-xs font-mono-tech text-slate-500">
                                         <span>SPEC: IRC / PWD</span>
                                         <span className="text-[#c88a22] font-bold">CLASS A</span>
                                     </div>
                                 </div>
 
                                 {/* Content Panel */}
-                                <div className="lg:col-span-8 p-8 flex flex-col justify-between">
+                                <div className="lg:col-span-8 p-8 flex flex-col justify-between bg-white/60 backdrop-blur-md">
                                     <div>
                                         <p className="text-sm text-slate-700 leading-relaxed mb-6">
                                             {svc.description}

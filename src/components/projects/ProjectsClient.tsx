@@ -34,7 +34,7 @@ export function ProjectsClient({ initialProjects }: Props) {
     const statuses = ["All", "Completed", "Ongoing"];
 
     return (
-        <section className="section-padding bg-[#FAF9F6]">
+        <section className="section-padding bg-transparent relative z-10">
             <div className="container-site">
                 {/* Control Bar: Categories, Statuses, and Search */}
                 <div className="mb-10 flex flex-col gap-5">
@@ -51,7 +51,7 @@ export function ProjectsClient({ initialProjects }: Props) {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Filter by project, department, or district…"
-                                className="w-full pl-10 pr-4 py-2.5 text-xs font-sans rounded-full border border-slate-200 bg-white focus:outline-none focus:border-[#0d1b2e] focus:ring-2 focus:ring-[#0d1b2e]/10 transition-all shadow-sm"
+                                className="w-full pl-10 pr-4 py-2.5 text-xs font-sans rounded-full border border-slate-200/80 bg-white/80 backdrop-blur-md focus:outline-none focus:border-[#0d1b2e] focus:ring-2 focus:ring-[#0d1b2e]/10 transition-all shadow-sm"
                             />
                             {searchQuery && (
                                 <button
@@ -64,7 +64,7 @@ export function ProjectsClient({ initialProjects }: Props) {
                         </div>
 
                         {/* Status Switcher (Capsule) */}
-                        <div className="inline-flex items-center p-1 rounded-full border border-slate-200 bg-white shadow-sm">
+                        <div className="inline-flex items-center p-1 rounded-full border border-slate-200/80 bg-white/80 backdrop-blur-md shadow-sm">
                             {statuses.map((status) => {
                                 const isActive = selectedStatus === status;
                                 return (
@@ -155,10 +155,10 @@ export function ProjectsClient({ initialProjects }: Props) {
                                 <Tilt3DCard maxTilt={5} className="h-full">
                                     <Link
                                         href={`/projects/${project.slug}`}
-                                        className="group flex flex-col h-full rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-matte-sm hover:shadow-matte-md hover:border-slate-300 transition-all duration-300"
+                                        className="group flex flex-col h-full rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-xl overflow-hidden shadow-matte-sm hover:shadow-matte-md hover:border-slate-300 hover:bg-white/95 transition-all duration-300"
                                     >
                                     {/* Card Top Banner with Watermark & CAD Line Pattern */}
-                                    <div className="relative h-40 p-5 bg-[#F4F5F7] border-b border-slate-200/80 flex flex-col justify-between overflow-hidden">
+                                    <div className="relative h-40 p-5 bg-white/60 backdrop-blur-md border-b border-slate-200/80 flex flex-col justify-between overflow-hidden">
                                         {/* Architectural Blueprint CAD Grid Pattern */}
                                         <svg
                                             className="absolute inset-0 w-full h-full opacity-20"

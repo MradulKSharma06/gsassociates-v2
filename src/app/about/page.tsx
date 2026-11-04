@@ -142,7 +142,7 @@ export default function AboutPage() {
             </section>
 
             {/* Animated 10 Years of Milestones (Responsive Scroll Progression) */}
-            <section id="milestones" className="section-padding bg-white border-b border-slate-200/80">
+            <section id="milestones" className="section-padding bg-transparent border-b border-slate-200/80 relative z-10">
                 <div className="container-site">
                     <div className="mb-12">
                         <SectionLabel>Institutional Growth</SectionLabel>

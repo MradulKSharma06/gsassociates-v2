@@ -19,7 +19,7 @@ function StatItem({
     });
 
     return (
-        <div className="flex flex-col p-4 rounded-xl hover:bg-[#FAF9F6] transition-all group cursor-default">
+        <div className="flex flex-col p-5 rounded-2xl bg-white/75 backdrop-blur-xl border border-slate-200/70 shadow-matte-sm hover:bg-white/90 hover:shadow-matte-md hover:border-slate-300 transition-all group cursor-default">
             <div
                 style={{ fontFamily: "var(--font-condensed)" }}
                 className="text-4xl sm:text-5xl font-extrabold text-[#0d1b2e] tracking-tight leading-none group-hover:text-[#185FA5] transition-colors"
@@ -39,11 +39,11 @@ export function StatsRow() {
     const { ref, isVisible } = useIntersection({ threshold: 0.2 });
 
     return (
-        <section className="bg-white border-b border-slate-200/80 py-12">
+        <section className="bg-transparent border-b border-slate-200/80 py-12 relative z-10">
             <div className="container-site">
                 <div
                     ref={ref as React.RefObject<HTMLDivElement>}
-                    className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 lg:divide-x divide-slate-200"
+                    className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6"
                 >
                     {stats.map((stat) => (
                         <div key={stat.label} className="lg:px-8 first:pl-0 last:pr-0">

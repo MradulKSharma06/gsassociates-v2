@@ -67,7 +67,7 @@ export function MilestonesTimeline() {
                                 }`}
                             >
                                 <Tilt3DCard maxTilt={5}>
-                                    <div className="p-6 sm:p-7 rounded-2xl border border-slate-200/90 bg-[#FAF9F6] shadow-matte-sm hover:shadow-matte-md hover:border-slate-300 transition-all group">
+                                    <div className="p-6 sm:p-7 rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-xl shadow-matte-sm hover:shadow-matte-md hover:border-slate-300 hover:bg-white/95 transition-all group">
                                         <div className="flex items-center justify-between mb-3">
                                             {/* Glowing Year Stamp */}
                                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-slate-200/80 shadow-xs">

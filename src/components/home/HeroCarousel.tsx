@@ -7,13 +7,13 @@ import { HeroArchitecturalCanvas } from "@/components/home/HeroArchitecturalCanv
 
 export function HeroCarousel() {
     return (
-        <section className="relative overflow-hidden bg-[#FAF9F6] border-b border-slate-200/80 blueprint-grid py-12 lg:py-20">
+        <section className="relative overflow-hidden bg-transparent border-b border-slate-200/80 blueprint-grid py-12 lg:py-20">
             <div className="container-site relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
                     {/* Left Column: Architectural Editorial Typography & Actions */}
                     <div className="lg:col-span-6 flex flex-col justify-center">
                         {/* Official Accreditation Stamp */}
-                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 text-[#0d1b2e] text-xs font-mono-tech shadow-sm mb-6 w-fit">
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-slate-200 text-[#0d1b2e] text-xs font-mono-tech shadow-sm mb-6 w-fit">
                             <span className="w-2 h-2 rounded-full bg-[#c88a22]"></span>
                             <span className="font-semibold">Class A Contractor · Tamil Nadu PWD & NHAI</span>
                         </div>

@@ -3,7 +3,7 @@ import { clients } from "@/data/stats";
 
 export function ClientStrip() {
     return (
-        <section className="py-20 bg-[#FAF9F6] border-t border-slate-200/80">
+        <section className="py-20 bg-transparent border-t border-slate-200/80 relative z-10">
             <div className="container-site">
                 <div className="text-center mb-10">
                     <SectionLabel className="justify-center">Institutional Authority</SectionLabel>
@@ -23,7 +23,7 @@ export function ClientStrip() {
                     {clients.map((client) => (
                         <div
                             key={client}
-                            className="flex items-center gap-2.5 px-5 py-3 rounded-full bg-white border border-slate-200/80 shadow-matte-sm hover:border-[#185FA5]/40 hover:shadow-matte-md transition-all group"
+                            className="flex items-center gap-2.5 px-5 py-3 rounded-full bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-matte-sm hover:border-[#185FA5]/40 hover:bg-white/95 hover:shadow-matte-md transition-all group cursor-default"
                         >
                             <span className="w-2 h-2 rounded-full bg-[#185FA5]/30 group-hover:bg-[#185FA5] transition-colors" />
                             <span

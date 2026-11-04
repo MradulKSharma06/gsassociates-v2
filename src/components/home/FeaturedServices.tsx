@@ -24,7 +24,7 @@ const iconMap = [
 
 export function FeaturedServices() {
     return (
-        <section className="section-padding bg-white border-b border-slate-200/80">
+        <section className="section-padding bg-transparent border-b border-slate-200/80 relative z-10">
             <div className="container-site">
                 {/* Header */}
                 <MotionWrapper direction="up">
@@ -41,7 +41,7 @@ export function FeaturedServices() {
                         </div>
                         <Link
                             href="/services"
-                            className="btn btn-outline shrink-0 self-start sm:self-auto group"
+                            className="btn btn-outline shrink-0 self-start sm:self-auto group bg-white/80 backdrop-blur-md"
                         >
                             <span>Technical Breakdown</span>
                             <ArrowRight
@@ -60,7 +60,7 @@ export function FeaturedServices() {
                         return (
                             <MotionWrapper key={svc.id} direction="up" delay={i * 0.08} className="h-full">
                                 <Tilt3DCard maxTilt={6} className="h-full">
-                                    <div className="group flex flex-col h-full rounded-2xl bg-[#FAF9F6] border border-slate-200/90 p-7 shadow-matte-sm hover:shadow-matte-md hover:border-slate-300 transition-all duration-300">
+                                    <div className="group flex flex-col h-full rounded-2xl bg-white/80 backdrop-blur-xl border border-slate-200/80 p-7 shadow-matte-sm hover:shadow-matte-md hover:border-slate-300 hover:bg-white/95 transition-all duration-300">
                                         {/* Icon Header */}
                                         <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 transition-transform">
                                             <IconComponent size={22} className="text-[#0d1b2e]" />

@@ -149,7 +149,7 @@ export default function ClientsPage() {
             </section>
 
             {/* Client Groups by Category */}
-            <section className="section-padding bg-[#FAF9F6]">
+            <section className="section-padding bg-transparent relative z-10">
                 <div className="container-site flex flex-col gap-16">
                     {clientGroups.map((group) => (
                         <div key={group.category}>
@@ -169,7 +169,7 @@ export default function ClientsPage() {
                                 {group.clients.map((client) => (
                                     <div
                                         key={client.name}
-                                        className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-matte-sm hover:shadow-matte-md hover:border-slate-300 transition-all flex flex-col justify-between"
+                                        className="bg-white/80 backdrop-blur-xl border border-slate-200/80 rounded-2xl p-6 shadow-matte-sm hover:shadow-matte-md hover:border-slate-300 hover:bg-white/95 transition-all flex flex-col justify-between"
                                     >
                                         <div>
                                             <div className="flex items-center justify-between mb-4">

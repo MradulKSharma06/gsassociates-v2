@@ -4,9 +4,9 @@ import { CtaBanner } from "@/components/home/CtaBanner";
 import { ExternalLink, FileText, CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
-    title: "Clients & Tenders",
+    title: "Clients & Empanelments",
     description:
-        "GSAssociates Construction is empanelled with Tamil Nadu PWD, NHAI, TNRDC, TWAD Board and other government departments. View our client roster and tender information.",
+        "GSAssociates is empanelled as a Class A Contractor with Tamil Nadu PWD, NHAI, TNRDC, TWAD Board, and municipal corporations across South India.",
 };
 
 const clientGroups = [
@@ -52,7 +52,7 @@ const clientGroups = [
         ],
     },
     {
-        category: "Central Government",
+        category: "Central Government & National Authorities",
         clients: [
             {
                 name: "NHAI",
@@ -69,12 +69,12 @@ const clientGroups = [
         ],
     },
     {
-        category: "Urban Local Bodies",
+        category: "Urban Local Bodies & Corporations",
         clients: [
             {
                 name: "Greater Chennai Corporation",
                 full: "Greater Chennai Corporation",
-                role: "City Roads & Civic Works",
+                role: "City Roads & Stormwater Drainage",
                 class: "Approved Contractor",
             },
             {
@@ -92,7 +92,7 @@ const clientGroups = [
             {
                 name: "Salem City Corporation",
                 full: "Salem City Municipal Corporation",
-                role: "Smart City Works",
+                role: "Smart City Infrastructure",
                 class: "Approved Contractor",
             },
         ],
@@ -103,130 +103,111 @@ const tenderLinks = [
     {
         name: "Tamil Nadu e-Procurement Portal",
         url: "https://www.tntenders.gov.in",
-        desc: "Official portal for all Tamil Nadu government tenders",
+        desc: "Official e-tendering portal for all Tamil Nadu state departments and undertakings.",
     },
     {
         name: "NHAI Tender Notices",
         url: "https://www.nhai.gov.in",
-        desc: "National Highways Authority — current bid invitations",
+        desc: "National Highways Authority of India — active bid invitations and announcements.",
     },
     {
         name: "CPPP — Central Procurement Portal",
         url: "https://eprocure.gov.in",
-        desc: "Central government works and procurement notices",
+        desc: "Central Government works, highways, and infrastructure procurement notices.",
     },
 ];
 
 const prequalCriteria = [
-    "Minimum 5 years in civil infrastructure contracting",
-    "Annual turnover ≥ ₹50 Cr (last 3 years average)",
-    "Similar work experience certificate from govt. dept.",
-    "Valid ISO 9001 certification",
-    "PAN, GST, ESI & EPF registration",
-    "Solvency certificate from nationalized bank",
-    "List of plant & machinery with ownership proof",
-    "Key personnel CVs (Site Engineer, QC Manager)",
+    "Minimum 5 years of verified civil infrastructure contracting experience",
+    "Annual turnover ≥ ₹50 Cr (average of last 3 consecutive audited fiscal years)",
+    "Valid Class A Contractor registration with Tamil Nadu PWD or equivalent central agency",
+    "ISO 9001:2015 Quality & ISO 14001:2015 Environmental Management certifications",
+    "Statutory PAN, GSTIN, ESI, EPF and labor compliance registrations",
+    "Solvency certificate issued by a scheduled commercial bank (min ₹20 Cr)",
+    "Certified inventory of heavy plant & machinery with unencumbered ownership proof",
+    "Qualified resident engineering personnel with PWD/NHAI project execution credentials",
 ];
 
 export default function ClientsPage() {
     return (
         <>
-            {/* Page hero */}
-            <section
-                className="relative overflow-hidden section-padding-sm"
-                style={{ background: "var(--color-navy)" }}
-            >
-                <div className="accent-bar absolute top-0 left-0 right-0" />
-                <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                    <defs>
-                        <pattern id="clg" width="60" height="60" patternUnits="userSpaceOnUse">
-                            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" strokeWidth="0.5" />
-                        </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#clg)" />
-                </svg>
+            {/* Architectural Page Hero */}
+            <section className="relative overflow-hidden section-padding-sm bg-[#FAF9F6] border-b border-slate-200/80 blueprint-grid">
                 <div className="container-site relative z-10">
-                    <SectionLabel light>Our Partners</SectionLabel>
+                    <SectionLabel>Institutional Roster</SectionLabel>
                     <h1
-                        style={{
-                            fontFamily: "var(--font-condensed)",
-                            fontSize: "clamp(40px, 6vw, 72px)",
-                            fontWeight: 800,
-                            color: "#fff",
-                            textTransform: "uppercase",
-                            letterSpacing: "2px",
-                            lineHeight: 1,
-                        }}
+                        style={{ fontFamily: "var(--font-condensed)" }}
+                        className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#0d1b2e] uppercase tracking-tight leading-none mt-2"
                     >
-                        Clients &amp; <span style={{ color: "var(--color-blue-bright)" }}>Empanelments</span>
+                        Clients &amp; <span className="text-[#185FA5]">Empanelments</span>
                     </h1>
-                    <p className="mt-4 text-[15px] font-light max-w-[560px]" style={{ color: "#8aadcc" }}>
-                        Trusted by Tamil Nadu&apos;s foremost government departments and urban
-                        local bodies for over a decade of infrastructure delivery.
+                    <p className="mt-4 text-base text-slate-600 max-w-xl font-normal">
+                        Trusted by Tamil Nadu&apos;s apex engineering departments, municipal corporations,
+                        and national authorities for over a decade of disciplined infrastructure delivery.
                     </p>
                 </div>
             </section>
 
-            {/* Client groups */}
-            <section className="section-padding" style={{ background: "var(--color-page-bg)" }}>
-                <div className="container-site flex flex-col gap-14">
+            {/* Client Groups by Category */}
+            <section className="section-padding bg-[#FAF9F6]">
+                <div className="container-site flex flex-col gap-16">
                     {clientGroups.map((group) => (
                         <div key={group.category}>
-                            <div className="mb-6">
-                                <SectionLabel>{group.category}</SectionLabel>
+                            <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-200/80">
+                                <h2
+                                    style={{ fontFamily: "var(--font-condensed)" }}
+                                    className="text-2xl font-bold uppercase tracking-wider text-[#0d1b2e]"
+                                >
+                                    {group.category}
+                                </h2>
+                                <span className="font-mono text-xs text-slate-400">
+                                    {group.clients.length} Statutory Bodies
+                                </span>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                                 {group.clients.map((client) => (
                                     <div
                                         key={client.name}
-                                        className="card-base p-5"
+                                        className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-matte-sm hover:shadow-matte-md hover:border-slate-300 transition-all flex flex-col justify-between"
                                     >
-                                        {/* Logo placeholder — replace with <Image> when logos are available */}
-                                        <div
-                                            className="w-14 h-14 rounded-[8px] flex items-center justify-center mb-4"
-                                            style={{ background: "var(--color-blue-pale)" }}
-                                        >
-                                            <span
-                                                style={{
-                                                    fontFamily: "var(--font-condensed)",
-                                                    fontSize: "11px",
-                                                    fontWeight: 800,
-                                                    color: "var(--color-blue-primary)",
-                                                    textTransform: "uppercase",
-                                                    letterSpacing: "1px",
-                                                    textAlign: "center",
-                                                    lineHeight: 1.2,
-                                                }}
+                                        <div>
+                                            <div className="flex items-center justify-between mb-4">
+                                                <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                                    <span
+                                                        style={{ fontFamily: "var(--font-condensed)" }}
+                                                        className="font-bold text-sm text-[#0d1b2e] tracking-wider"
+                                                    >
+                                                        {client.name
+                                                            .split(" ")
+                                                            .map((w) => w[0])
+                                                            .slice(0, 4)
+                                                            .join("")}
+                                                    </span>
+                                                </div>
+                                                <span className="font-mono text-[10px] text-slate-400 tracking-wider">
+                                                    REGISTERED
+                                                </span>
+                                            </div>
+
+                                            <h3
+                                                style={{ fontFamily: "var(--font-condensed)" }}
+                                                className="text-xl font-bold text-[#0d1b2e] uppercase tracking-wide leading-tight mb-1"
                                             >
-                                                {client.name
-                                                    .split(" ")
-                                                    .map((w) => w[0])
-                                                    .slice(0, 4)
-                                                    .join("")}
-                                            </span>
+                                                {client.name}
+                                            </h3>
+                                            <p className="text-xs text-slate-500 mb-6 leading-relaxed">
+                                                {client.full}
+                                            </p>
                                         </div>
 
-                                        <h3
-                                            style={{
-                                                fontFamily: "var(--font-condensed)",
-                                                fontSize: "18px",
-                                                fontWeight: 700,
-                                                color: "var(--color-text-primary)",
-                                                textTransform: "uppercase",
-                                                letterSpacing: "0.5px",
-                                                marginBottom: "3px",
-                                            }}
-                                        >
-                                            {client.name}
-                                        </h3>
-                                        <p className="text-[11px] mb-3" style={{ color: "var(--color-text-faint)" }}>
-                                            {client.full}
-                                        </p>
-
-                                        <div className="flex flex-wrap gap-1.5 mt-auto">
-                                            <span className="badge badge-blue">{client.role}</span>
-                                            <span className="badge badge-green">{client.class}</span>
+                                        <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-mono font-medium bg-[#185FA5]/10 text-[#185FA5] border border-[#185FA5]/20">
+                                                {client.role}
+                                            </span>
+                                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-mono font-medium bg-[#c88a22]/10 text-[#c88a22] border border-[#c88a22]/20">
+                                                {client.class}
+                                            </span>
                                         </div>
                                     </div>
                                 ))}
@@ -236,18 +217,18 @@ export default function ClientsPage() {
                 </div>
             </section>
 
-            {/* Tender information */}
-            <section
-                className="section-padding"
-                style={{ background: "var(--color-surface)", borderTop: "1px solid var(--color-border)" }}
-            >
+            {/* Tender Portals & Prequalification */}
+            <section className="section-padding bg-white border-t border-slate-200/80">
                 <div className="container-site">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
                         {/* Tender portals */}
                         <div>
                             <SectionLabel>Tender Information</SectionLabel>
-                            <h2 className="section-heading mb-8" style={{ fontSize: "clamp(24px, 3vw, 36px)" }}>
-                                Official <span>Tender Portals</span>
+                            <h2
+                                style={{ fontFamily: "var(--font-condensed)" }}
+                                className="text-3xl sm:text-4xl font-extrabold text-[#0d1b2e] uppercase tracking-tight mb-8"
+                            >
+                                Official <span className="text-[#185FA5]">Tender Portals</span>
                             </h2>
 
                             <div className="flex flex-col gap-4">
@@ -257,39 +238,25 @@ export default function ClientsPage() {
                                         href={link.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-start gap-4 p-5 rounded-card border group transition-all hover:border-blue-bright/40"
-                                        style={{
-                                            borderColor: "var(--color-border)",
-                                            background: "var(--color-page-bg)",
-                                        }}
+                                        className="flex items-start gap-4 p-5 rounded-2xl border border-slate-200/80 bg-[#FAF9F6] group hover:border-[#185FA5]/40 hover:bg-white hover:shadow-matte-sm transition-all"
                                     >
-                                        <div
-                                            className="w-10 h-10 rounded-[6px] flex items-center justify-center shrink-0"
-                                            style={{ background: "var(--color-blue-pale)" }}
-                                        >
-                                            <FileText size={18} style={{ color: "var(--color-blue-primary)" }} />
+                                        <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center shrink-0 text-[#185FA5] group-hover:scale-105 transition-transform">
+                                            <FileText size={18} />
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2">
                                                 <h3
-                                                    style={{
-                                                        fontFamily: "var(--font-condensed)",
-                                                        fontSize: "15px",
-                                                        fontWeight: 700,
-                                                        color: "var(--color-text-primary)",
-                                                        textTransform: "uppercase",
-                                                        letterSpacing: "0.5px",
-                                                    }}
+                                                    style={{ fontFamily: "var(--font-condensed)" }}
+                                                    className="text-base font-bold text-[#0d1b2e] uppercase tracking-wide group-hover:text-[#185FA5] transition-colors"
                                                 >
                                                     {link.name}
                                                 </h3>
                                                 <ExternalLink
-                                                    size={12}
-                                                    style={{ color: "var(--color-blue-primary)" }}
-                                                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    size={13}
+                                                    className="text-[#185FA5] opacity-0 group-hover:opacity-100 transition-opacity"
                                                 />
                                             </div>
-                                            <p className="text-[12px] mt-1" style={{ color: "var(--color-text-muted)" }}>
+                                            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                                                 {link.desc}
                                             </p>
                                         </div>
@@ -298,44 +265,36 @@ export default function ClientsPage() {
                             </div>
                         </div>
 
-                        {/* Prequalification */}
+                        {/* Prequalification Criteria */}
                         <div>
-                            <SectionLabel>For Bidders</SectionLabel>
-                            <h2 className="section-heading mb-8" style={{ fontSize: "clamp(24px, 3vw, 36px)" }}>
-                                Prequalification <span>Criteria</span>
+                            <SectionLabel>For Prospective Bidders &amp; JV Partners</SectionLabel>
+                            <h2
+                                style={{ fontFamily: "var(--font-condensed)" }}
+                                className="text-3xl sm:text-4xl font-extrabold text-[#0d1b2e] uppercase tracking-tight mb-8"
+                            >
+                                Prequalification <span className="text-[#185FA5]">Standards</span>
                             </h2>
 
-                            <div
-                                className="rounded-card border p-6"
-                                style={{ borderColor: "var(--color-border)", background: "var(--color-page-bg)" }}
-                            >
-                                <p className="text-[13px] leading-relaxed mb-5" style={{ color: "var(--color-text-muted)" }}>
-                                    GSAssociates participates in government tenders requiring the
-                                    following minimum qualifications. Subcontractors and JV
-                                    partners must also satisfy these criteria proportionally.
+                            <div className="rounded-2xl border border-slate-200/80 bg-[#FAF9F6] p-7 shadow-matte-sm">
+                                <p className="text-xs text-slate-600 leading-relaxed mb-6 font-medium">
+                                    GSAssociates participates in government works requiring strict statutory compliance. Joint Venture (JV) partners and specialized subcontractors are vetted against these core metrics:
                                 </p>
 
-                                <div className="flex flex-col gap-2.5">
-                                    {prequalCriteria.map((item) => (
+                                <div className="flex flex-col gap-3">
+                                    {prequalCriteria.map((item, idx) => (
                                         <div key={item} className="flex items-start gap-3">
-                                            <CheckCircle2
-                                                size={14}
-                                                className="shrink-0 mt-0.5"
-                                                style={{ color: "var(--color-blue-primary)" }}
-                                            />
-                                            <span className="text-[13px]" style={{ color: "var(--color-text-body)" }}>
+                                            <div className="w-4 h-4 rounded-full bg-[#185FA5]/10 text-[#185FA5] flex items-center justify-center shrink-0 mt-0.5 font-mono text-[9px] font-bold">
+                                                {idx + 1}
+                                            </div>
+                                            <span className="text-xs text-slate-700 leading-relaxed font-normal">
                                                 {item}
                                             </span>
                                         </div>
                                     ))}
                                 </div>
 
-                                <div
-                                    className="mt-6 pt-5 border-t text-[12px]"
-                                    style={{ borderColor: "var(--color-border)", color: "var(--color-text-faint)" }}
-                                >
-                                    Criteria may vary by project value and category. Always refer
-                                    to the specific NIT for exact requirements.
+                                <div className="mt-6 pt-5 border-t border-slate-200 text-[11px] text-slate-400 font-mono">
+                                    * Thresholds vary per NIT (Notice Inviting Tender). Detailed pre-qualification dossiers are submitted with Bid Technical Package A.
                                 </div>
                             </div>
                         </div>

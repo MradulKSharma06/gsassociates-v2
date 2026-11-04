@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { CtaBanner } from "@/components/home/CtaBanner";
 import { services } from "@/data/services";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, ArrowRight } from "lucide-react";
+import { ArchitecturalButton } from "@/components/ui/ArchitecturalButton";
 
 export const metadata: Metadata = {
     title: "Services",
@@ -10,124 +11,92 @@ export const metadata: Metadata = {
         "GSAssociates Construction provides road & highway construction, bridges, government buildings, water infrastructure, and urban development services across Tamil Nadu.",
 };
 
-const accentColors: Record<string, string> = {
-    blue: "var(--color-blue-primary)",
-    navy: "var(--color-navy-700)",
-    gold: "var(--color-gold)",
-};
-
 export default function ServicesPage() {
     return (
         <>
-            {/* Page hero */}
-            <section
-                className="relative overflow-hidden section-padding-sm"
-                style={{ background: "var(--color-navy)" }}
-            >
-                <div className="accent-bar absolute top-0 left-0 right-0" />
-                <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                    <defs>
-                        <pattern id="sg" width="60" height="60" patternUnits="userSpaceOnUse">
-                            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" strokeWidth="0.5" />
-                        </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#sg)" />
-                </svg>
+            {/* Architectural Page Hero */}
+            <section className="relative overflow-hidden section-padding-sm bg-[#FAF9F6] border-b border-slate-200/80 blueprint-grid">
                 <div className="container-site relative z-10">
-                    <SectionLabel light>What We Do</SectionLabel>
+                    <SectionLabel>Institutional Capabilities</SectionLabel>
                     <h1
-                        style={{
-                            fontFamily: "var(--font-condensed)",
-                            fontSize: "clamp(40px, 6vw, 72px)",
-                            fontWeight: 800,
-                            color: "#fff",
-                            textTransform: "uppercase",
-                            letterSpacing: "2px",
-                            lineHeight: 1,
-                        }}
+                        style={{ fontFamily: "var(--font-condensed)" }}
+                        className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#0d1b2e] uppercase tracking-tight leading-none mt-2"
                     >
-                        Our <span style={{ color: "var(--color-blue-bright)" }}>Services</span>
+                        Civil Engineering <span className="text-[#185FA5]">Disciplines</span>
                     </h1>
-                    <p className="mt-4 text-[15px] font-light max-w-[560px]" style={{ color: "#8aadcc" }}>
-                        End-to-end civil infrastructure construction and project management,
-                        built around Tamil Nadu&apos;s government sector needs.
+                    <p className="mt-4 text-base text-slate-600 max-w-xl font-normal">
+                        End-to-end heavy civil construction and project management, calibrated to
+                        Tamil Nadu&apos;s government infrastructure standards.
                     </p>
                 </div>
             </section>
 
-            {/* Services list */}
-            <section className="section-padding" style={{ background: "var(--color-page-bg)" }}>
-                <div className="container-site flex flex-col gap-10">
+            {/* Services Detailed List */}
+            <section className="section-padding bg-white border-b border-slate-200/80">
+                <div className="container-site flex flex-col gap-8">
                     {services.map((svc, i) => {
-                        const accent = accentColors[svc.accentColor] ?? "var(--color-blue-primary)";
                         const isReversed = i % 2 !== 0;
+
                         return (
                             <div
                                 key={svc.id}
                                 id={svc.id}
-                                className={`grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-0 rounded-card overflow-hidden border ${isReversed ? "lg:grid-cols-[2fr_1fr]" : ""}`}
-                                style={{ borderColor: "var(--color-border)", background: "var(--color-surface)" }}
+                                className={`grid grid-cols-1 lg:grid-cols-12 rounded-2xl overflow-hidden border border-slate-200 shadow-matte-sm bg-white ${
+                                    isReversed ? "lg:direction-rtl" : ""
+                                }`}
                             >
-                                {/* Accent panel */}
-                                <div
-                                    className={`p-8 flex flex-col justify-between ${isReversed ? "lg:order-last" : ""}`}
-                                    style={{
-                                        background: `linear-gradient(135deg, ${accent}18 0%, ${accent}08 100%)`,
-                                        borderRight: isReversed ? "none" : `1px solid var(--color-border)`,
-                                        borderLeft: isReversed ? `1px solid var(--color-border)` : "none",
-                                    }}
-                                >
+                                {/* Left/Side Panel */}
+                                <div className="lg:col-span-4 p-8 bg-[#FAF9F6] border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col justify-between">
                                     <div>
-                                        <div
-                                            className="text-[9.5px] font-bold tracking-[2.5px] uppercase mb-3"
-                                            style={{ color: accent }}
-                                        >
+                                        <div className="text-[10px] font-mono-tech font-bold uppercase tracking-widest text-[#185FA5] mb-2">
                                             {svc.category}
                                         </div>
                                         <h2
-                                            style={{
-                                                fontFamily: "var(--font-condensed)",
-                                                fontSize: "clamp(24px, 3vw, 34px)",
-                                                fontWeight: 800,
-                                                color: "var(--color-text-primary)",
-                                                textTransform: "uppercase",
-                                                letterSpacing: "1px",
-                                                lineHeight: 1.1,
-                                            }}
+                                            style={{ fontFamily: "var(--font-condensed)" }}
+                                            className="text-3xl font-extrabold text-[#0d1b2e] uppercase leading-tight"
                                         >
                                             {svc.title}
                                         </h2>
                                     </div>
-                                    <div
-                                        className="w-12 h-[3px] rounded-full mt-6"
-                                        style={{ background: accent }}
-                                    />
+                                    <div className="mt-8 pt-4 border-t border-slate-200 flex items-center justify-between text-xs font-mono-tech text-slate-500">
+                                        <span>SPEC: IRC / PWD</span>
+                                        <span className="text-[#c88a22] font-bold">CLASS A</span>
+                                    </div>
                                 </div>
 
-                                {/* Content panel */}
-                                <div className="p-8">
-                                    <p className="text-[14px] leading-relaxed mb-6" style={{ color: "var(--color-text-muted)" }}>
-                                        {svc.description}
-                                    </p>
-                                    <h3
-                                        className="text-[10px] font-bold tracking-[2px] uppercase mb-3"
-                                        style={{ color: "var(--color-text-faint)" }}
-                                    >
-                                        Key Capabilities
-                                    </h3>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                        {svc.capabilities.map((cap) => (
-                                            <div key={cap} className="flex items-start gap-2.5">
-                                                <CheckCircle2
-                                                    size={14}
-                                                    className="mt-0.5 shrink-0"
-                                                    style={{ color: accent }}
-                                                />
-                                                <span className="text-[13px]" style={{ color: "var(--color-text-body)" }}>
-                                                    {cap}
-                                                </span>
-                                            </div>
-                                        ))}
+                                {/* Content Panel */}
+                                <div className="lg:col-span-8 p-8 flex flex-col justify-between">
+                                    <div>
+                                        <p className="text-sm text-slate-700 leading-relaxed mb-6">
+                                            {svc.description}
+                                        </p>
+
+                                        <h3 className="text-xs font-mono-tech font-bold uppercase tracking-wider text-slate-400 mb-3">
+                                            Key Engineering Deliverables
+                                        </h3>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+                                            {svc.capabilities.map((cap) => (
+                                                <div key={cap} className="flex items-start gap-2.5">
+                                                    <CheckCircle2
+                                                        size={14}
+                                                        className="mt-0.5 shrink-0 text-[#185FA5]"
+                                                    />
+                                                    <span className="text-xs font-medium text-slate-700 font-sans">
+                                                        {cap}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-5 border-t border-slate-100 flex items-center justify-between">
+                                        <span className="text-xs text-slate-500 font-mono-tech">
+                                            Available for State &amp; Central Tenders
+                                        </span>
+                                        <ArchitecturalButton href="/contact" variant="wireframe" size="sm">
+                                            <span>Request Specifications</span>
+                                            <ArrowRight size={12} />
+                                        </ArchitecturalButton>
                                     </div>
                                 </div>
                             </div>

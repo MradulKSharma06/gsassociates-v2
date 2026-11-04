@@ -3,36 +3,32 @@ import { clients } from "@/data/stats";
 
 export function ClientStrip() {
     return (
-        <section
-            className="section-padding-sm"
-            style={{ background: "var(--color-surface)", borderTop: "1px solid var(--color-border)" }}
-        >
+        <section className="py-20 bg-[#FAF9F6] border-t border-slate-200/80">
             <div className="container-site">
                 <div className="text-center mb-10">
-                    <SectionLabel className="justify-center">Trusted By</SectionLabel>
+                    <SectionLabel className="justify-center">Institutional Authority</SectionLabel>
                     <h2
-                        className="section-heading"
-                        style={{ fontSize: "clamp(26px, 3vw, 36px)" }}
+                        style={{ fontFamily: "var(--font-condensed)" }}
+                        className="text-3xl sm:text-4xl font-extrabold text-[#0d1b2e] uppercase tracking-tight mt-1"
                     >
-                        Government <span>Partners</span>
+                        Empanelled &amp; <span className="text-[#185FA5]">Trusted By</span>
                     </h2>
+                    <p className="mt-2 text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+                        Executing mission-critical civil contracts across Tamil Nadu state departments and municipal bodies.
+                    </p>
                 </div>
 
-                {/* Client logos — text-based for MVP; swap with <Image> for real logos */}
-                <div className="flex flex-wrap justify-center gap-x-8 gap-y-5">
+                {/* Architectural client monogram pills */}
+                <div className="flex flex-wrap items-center justify-center gap-3 max-w-4xl mx-auto">
                     {clients.map((client) => (
                         <div
                             key={client}
-                            className="flex items-center justify-center px-6 py-3 rounded-card border transition-all hover:border-blue-bright/40 hover:shadow-card"
-                            style={{
-                                borderColor: "var(--color-border)",
-                                background: "var(--color-page-bg)",
-                                minWidth: "140px",
-                            }}
+                            className="flex items-center gap-2.5 px-5 py-3 rounded-full bg-white border border-slate-200/80 shadow-matte-sm hover:border-[#185FA5]/40 hover:shadow-matte-md transition-all group"
                         >
+                            <span className="w-2 h-2 rounded-full bg-[#185FA5]/30 group-hover:bg-[#185FA5] transition-colors" />
                             <span
-                                className="text-[11px] font-bold tracking-[1px] uppercase text-center"
-                                style={{ color: "var(--color-text-muted)" }}
+                                style={{ fontFamily: "var(--font-condensed)" }}
+                                className="text-sm font-bold tracking-wider uppercase text-[#0d1b2e] group-hover:text-[#185FA5] transition-colors"
                             >
                                 {client}
                             </span>

@@ -1,66 +1,45 @@
-import Link from "next/link";
 import { ArrowLeft, Home } from "lucide-react";
+import { ArchitecturalButton } from "@/components/ui/ArchitecturalButton";
 
 export default function NotFound() {
     return (
-        <section
-            className="min-h-[70vh] flex items-center justify-center"
-            style={{ background: "var(--color-page-bg)" }}
-        >
-            <div className="container-site text-center py-24">
-                {/* Big 404 */}
+        <section className="min-h-[75vh] flex items-center justify-center bg-[#FAF9F6] blueprint-grid">
+            <div className="container-site text-center py-20 relative z-10">
                 <div
                     style={{
                         fontFamily: "var(--font-condensed)",
-                        fontSize: "clamp(100px, 20vw, 220px)",
-                        fontWeight: 800,
-                        color: "var(--color-border)",
+                        fontSize: "clamp(100px, 18vw, 200px)",
                         lineHeight: 1,
-                        letterSpacing: "8px",
-                        userSelect: "none",
+                        letterSpacing: "4px",
                     }}
+                    className="font-extrabold text-slate-200 select-none"
                     aria-hidden
                 >
                     404
                 </div>
 
-                {/* Accent bar */}
-                <div
-                    className="h-[3px] w-24 mx-auto -mt-4 mb-8 rounded-full"
-                    style={{ background: "linear-gradient(90deg, var(--color-blue-primary), var(--color-blue-bright))" }}
-                />
+                <div className="h-[2px] w-20 mx-auto -mt-4 mb-6 rounded-full bg-[#185FA5]" />
 
                 <h1
-                    style={{
-                        fontFamily: "var(--font-condensed)",
-                        fontSize: "clamp(28px, 4vw, 44px)",
-                        fontWeight: 800,
-                        color: "var(--color-text-primary)",
-                        textTransform: "uppercase",
-                        letterSpacing: "1.5px",
-                        marginBottom: "12px",
-                    }}
+                    style={{ fontFamily: "var(--font-condensed)" }}
+                    className="text-3xl sm:text-4xl font-extrabold text-[#0d1b2e] uppercase tracking-wide mb-3"
                 >
-                    Page Not Found
+                    Drawing Not Located
                 </h1>
 
-                <p
-                    className="text-[15px] max-w-[420px] mx-auto mb-10"
-                    style={{ color: "var(--color-text-muted)" }}
-                >
-                    The page you&apos;re looking for doesn&apos;t exist or may have been
-                    moved. Head back to the homepage or browse our projects.
+                <p className="text-sm text-slate-500 max-w-md mx-auto mb-8 font-normal">
+                    The requested architectural drawing or project spec sheet is not in this directory. Return to the main project registry or homepage.
                 </p>
 
                 <div className="flex flex-wrap justify-center gap-4">
-                    <Link href="/" className="btn btn-primary btn-lg">
-                        <Home size={16} />
-                        Go to Homepage
-                    </Link>
-                    <Link href="/projects" className="btn btn-outline btn-lg">
-                        <ArrowLeft size={16} />
-                        Browse Projects
-                    </Link>
+                    <ArchitecturalButton href="/" variant="primary" size="md">
+                        <Home size={14} className="mr-1" />
+                        Main Index
+                    </ArchitecturalButton>
+                    <ArchitecturalButton href="/projects" variant="wireframe" size="md">
+                        <ArrowLeft size={14} className="mr-1" />
+                        Project Registry
+                    </ArchitecturalButton>
                 </div>
             </div>
         </section>

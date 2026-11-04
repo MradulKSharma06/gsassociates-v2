@@ -5,7 +5,8 @@ import { projects } from "@/data/projects";
 import { Badge } from "@/components/ui/Badge";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { CtaBanner } from "@/components/home/CtaBanner";
-import { ArrowLeft, MapPin, Building2, Clock, Calendar, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, MapPin, Building2, Clock, Calendar, CheckCircle2, ShieldCheck } from "lucide-react";
+import { ArchitecturalButton } from "@/components/ui/ArchitecturalButton";
 
 interface Props {
     params: { slug: string };
@@ -34,208 +35,197 @@ export default function ProjectDetailPage({ params }: Props) {
 
     return (
         <>
-            {/* Hero */}
-            <section
-                className="relative section-padding-sm"
-                style={{ background: "var(--color-navy)" }}
-            >
-                <div className="accent-bar absolute top-0 left-0 right-0" />
+            {/* Top Architectural Header */}
+            <section className="relative bg-[#FAF9F6] border-b border-slate-200/80 py-12 lg:py-16 blueprint-grid">
                 <div className="container-site relative z-10">
                     <Link
                         href="/projects"
-                        className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[1.5px] uppercase mb-6 transition-colors"
-                        style={{ color: "#5a7a99" }}
+                        className="inline-flex items-center gap-2 text-xs font-mono-tech uppercase tracking-wider text-slate-500 hover:text-[#0d1b2e] mb-6 transition-colors"
                     >
-                        <ArrowLeft size={13} /> Back to Projects
+                        <ArrowLeft size={13} /> Return to Portfolio
                     </Link>
 
-                    <div className="flex flex-wrap gap-2 mb-4">
+                    <div className="flex flex-wrap items-center gap-2.5 mb-4">
                         <Badge variant={project.category === "Government Buildings" ? "gold" : "blue"}>
                             {project.category}
                         </Badge>
-                        <Badge variant={project.status === "Ongoing" ? "navy" : "green"}>
+                        <span className="badge badge-green">
+                            <CheckCircle2 size={11} className="mr-1" />
                             {project.status}
-                        </Badge>
+                        </span>
+                        <span className="text-xs font-mono-tech text-slate-400">
+                            ID: {project.id.toUpperCase()}
+                        </span>
                     </div>
 
                     <h1
-                        style={{
-                            fontFamily: "var(--font-condensed)",
-                            fontSize: "clamp(32px, 5vw, 60px)",
-                            fontWeight: 800,
-                            color: "#fff",
-                            textTransform: "uppercase",
-                            letterSpacing: "2px",
-                            lineHeight: 1.05,
-                            maxWidth: "800px",
-                        }}
+                        style={{ fontFamily: "var(--font-condensed)" }}
+                        className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#0d1b2e] uppercase tracking-tight leading-tight max-w-4xl"
                     >
                         {project.title}
                     </h1>
                 </div>
             </section>
 
-            {/* Content */}
-            <section className="section-padding" style={{ background: "var(--color-page-bg)" }}>
+            {/* Dossier Content & Sticky Spec Sheet */}
+            <section className="section-padding bg-white border-b border-slate-200/80">
                 <div className="container-site">
-                    <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10">
-                        {/* Left */}
-                        <div>
-                            {/* Project image placeholder */}
-                            <div
-                                className="rounded-card mb-8 flex items-center justify-center"
-                                style={{
-                                    height: "360px",
-                                    background: "linear-gradient(135deg, var(--color-navy-700) 0%, var(--color-blue-primary) 100%)",
-                                }}
-                            >
-                                <span
-                                    style={{
-                                        fontFamily: "var(--font-condensed)",
-                                        fontSize: "80px",
-                                        fontWeight: 800,
-                                        color: "rgba(255,255,255,0.06)",
-                                        letterSpacing: "4px",
-                                        textTransform: "uppercase",
-                                    }}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        {/* Left: Project Narrative & Highlights */}
+                        <div className="lg:col-span-8 space-y-10">
+                            {/* CAD Elevation Banner */}
+                            <div className="rounded-2xl border border-slate-200 bg-[#F4F5F7] p-8 relative overflow-hidden flex flex-col justify-between min-h-[300px]">
+                                <svg
+                                    className="absolute inset-0 w-full h-full opacity-25"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    aria-hidden
                                 >
-                                    PHOTO
-                                </span>
+                                    <defs>
+                                        <pattern id="dossierCad" width="28" height="28" patternUnits="userSpaceOnUse">
+                                            <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#0d1b2e" strokeWidth="0.4" />
+                                        </pattern>
+                                    </defs>
+                                    <rect width="100%" height="100%" fill="url(#dossierCad)" />
+                                </svg>
+
+                                <div className="relative z-10 flex items-center justify-between">
+                                    <span className="text-xs font-mono-tech text-slate-500 uppercase">
+                                        Architectural Blueprint Elevation
+                                    </span>
+                                    <span className="text-xs font-mono-tech text-[#c88a22] font-bold">
+                                        IRC:SP:84-2014
+                                    </span>
+                                </div>
+
+                                <div className="relative z-10 my-8">
+                                    <div className="text-[10px] font-mono-tech uppercase tracking-widest text-slate-500 mb-1">
+                                        Total Executed Contract Value
+                                    </div>
+                                    <div
+                                        style={{ fontFamily: "var(--font-condensed)" }}
+                                        className="text-5xl sm:text-6xl font-extrabold text-[#0d1b2e] tracking-tight"
+                                    >
+                                        {project.value}
+                                    </div>
+                                </div>
+
+                                <div className="relative z-10 flex items-center gap-2 text-xs font-mono-tech text-slate-600">
+                                    <Building2 size={13} className="text-[#185FA5]" />
+                                    <span>Client Authority: {project.client}</span>
+                                </div>
                             </div>
 
-                            <SectionLabel>Project Overview</SectionLabel>
-                            <h2 className="section-heading mb-4" style={{ fontSize: "clamp(22px, 3vw, 32px)" }}>
-                                About This <span>Project</span>
-                            </h2>
-                            <p className="text-[15px] leading-relaxed mb-8" style={{ color: "var(--color-text-body)" }}>
-                                {project.description}
-                            </p>
+                            {/* Overview Narrative */}
+                            <div>
+                                <SectionLabel>Project Scope & Engineering</SectionLabel>
+                                <h2 className="section-heading mb-4 text-3xl">
+                                    Executive <span>Overview</span>
+                                </h2>
+                                <p className="text-base text-slate-700 leading-relaxed">
+                                    {project.description}
+                                </p>
+                            </div>
 
-                            <h3
-                                className="text-[10px] font-bold tracking-[2.5px] uppercase mb-4"
-                                style={{ color: "var(--color-text-faint)" }}
-                            >
-                                Key Highlights
-                            </h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {project.highlights.map((h) => (
-                                    <div
-                                        key={h}
-                                        className="flex items-center gap-3 p-4 rounded-card border"
-                                        style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
-                                    >
-                                        <CheckCircle2 size={16} className="shrink-0" style={{ color: "var(--color-blue-primary)" }} />
-                                        <span className="text-[13px]" style={{ color: "var(--color-text-body)" }}>{h}</span>
-                                    </div>
-                                ))}
+                            {/* Key Highlights Checklist */}
+                            <div>
+                                <h3 className="text-xs font-mono-tech font-bold uppercase tracking-wider text-slate-500 mb-4">
+                                    Structural Deliverables & Metrics
+                                </h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                    {project.highlights.map((h, i) => (
+                                        <div
+                                            key={i}
+                                            className="flex items-center gap-3 p-4 rounded-xl bg-[#FAF9F6] border border-slate-200"
+                                        >
+                                            <CheckCircle2 size={16} className="text-[#185FA5] shrink-0" />
+                                            <span className="text-xs font-semibold text-slate-700 font-sans">
+                                                {h}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
-                        {/* Right — Info sidebar */}
-                        <div>
-                            <div
-                                className="rounded-card border sticky top-24"
-                                style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
-                            >
-                                <div className="p-6 border-b" style={{ borderColor: "var(--color-border)" }}>
-                                    <h3
-                                        className="text-[10px] font-bold tracking-[2.5px] uppercase mb-0"
-                                        style={{ color: "var(--color-blue-primary)" }}
-                                    >
-                                        Project Details
-                                    </h3>
+                        {/* Right: Sticky Executive Spec Sheet */}
+                        <div className="lg:col-span-4">
+                            <div className="rounded-2xl border border-slate-200 bg-[#FAF9F6] p-7 shadow-matte-sm sticky top-28 space-y-6">
+                                <div className="pb-4 border-b border-slate-200 flex items-center justify-between">
+                                    <span className="text-xs font-mono-tech font-bold uppercase tracking-wider text-[#0d1b2e]">
+                                        Tender Dossier Specs
+                                    </span>
+                                    <ShieldCheck size={16} className="text-[#c88a22]" />
                                 </div>
-                                <div className="p-6 flex flex-col gap-5">
-                                    {[
-                                        { icon: Building2, label: "Client", value: project.client },
-                                        { icon: MapPin, label: "Location", value: project.location },
-                                        { icon: Clock, label: "Duration", value: project.duration },
-                                        { icon: Calendar, label: "Year", value: project.year },
-                                    ].map(({ icon: Icon, label, value }) => (
-                                        <div key={label} className="flex items-start gap-3">
-                                            <div
-                                                className="w-8 h-8 rounded-[6px] flex items-center justify-center shrink-0"
-                                                style={{ background: "var(--color-blue-pale)" }}
-                                            >
-                                                <Icon size={15} style={{ color: "var(--color-blue-primary)" }} />
-                                            </div>
-                                            <div>
-                                                <div className="text-[10px] font-bold tracking-[1.5px] uppercase" style={{ color: "var(--color-text-faint)" }}>
-                                                    {label}
-                                                </div>
-                                                <div className="text-[13px] font-500 mt-0.5" style={{ color: "var(--color-text-body)" }}>
-                                                    {value}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
 
-                                    {/* Value */}
-                                    <div
-                                        className="mt-2 p-4 rounded-card text-center"
-                                        style={{ background: "var(--color-navy)" }}
-                                    >
-                                        <div className="text-[9px] font-bold tracking-[2px] uppercase" style={{ color: "#5a7a99" }}>
-                                            Project Value
-                                        </div>
-                                        <div
-                                            style={{
-                                                fontFamily: "var(--font-condensed)",
-                                                fontSize: "36px",
-                                                fontWeight: 800,
-                                                color: "#fff",
-                                                lineHeight: 1.1,
-                                                marginTop: "4px",
-                                            }}
-                                        >
-                                            {project.value}
-                                        </div>
+                                <div className="space-y-4 text-xs font-mono-tech">
+                                    <div>
+                                        <div className="text-slate-400 text-[10px] uppercase">Client Department</div>
+                                        <div className="text-[#0d1b2e] font-bold text-sm font-sans mt-0.5">{project.client}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-slate-400 text-[10px] uppercase">District Location</div>
+                                        <div className="text-[#0d1b2e] font-semibold mt-0.5">{project.location}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-slate-400 text-[10px] uppercase">Execution Period</div>
+                                        <div className="text-[#0d1b2e] font-semibold mt-0.5">{project.duration}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-slate-400 text-[10px] uppercase">Completion Year</div>
+                                        <div className="text-[#0d1b2e] font-semibold mt-0.5">{project.year}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-slate-400 text-[10px] uppercase">Contractor Status</div>
+                                        <div className="text-emerald-700 font-bold mt-0.5">Class A · Verified Handover</div>
                                     </div>
                                 </div>
 
-                                <div className="px-6 pb-6">
-                                    <Link href="/contact" className="btn btn-primary w-full justify-center">
-                                        Enquire About This Project
-                                    </Link>
+                                <div className="pt-6 border-t border-slate-200">
+                                    <ArchitecturalButton href="/contact" variant="primary" size="md" className="w-full justify-center">
+                                        Inquire on Similar Works
+                                    </ArchitecturalButton>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    {/* Related */}
-                    {related.length > 0 && (
-                        <div className="mt-16">
-                            <h2 className="section-heading mb-6" style={{ fontSize: "clamp(22px, 3vw, 32px)" }}>
-                                Related <span>Projects</span>
-                            </h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                {related.map((rp) => (
-                                    <Link key={rp.id} href={`/projects/${rp.slug}`} className="card-base p-5 block group">
-                                        <Badge variant="blue" className="mb-3">{rp.category}</Badge>
-                                        <h3
-                                            className="group-hover:text-blue-primary transition-colors"
-                                            style={{
-                                                fontFamily: "var(--font-condensed)",
-                                                fontSize: "18px",
-                                                fontWeight: 700,
-                                                color: "var(--color-text-primary)",
-                                                textTransform: "uppercase",
-                                                letterSpacing: "0.5px",
-                                                marginBottom: "6px",
-                                            }}
-                                        >
-                                            {rp.title}
-                                        </h3>
-                                        <p className="text-[12px]" style={{ color: "var(--color-text-muted)" }}>
-                                            {rp.client} · {rp.value}
-                                        </p>
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                 </div>
             </section>
+
+            {/* Related Projects */}
+            {related.length > 0 && (
+                <section className="section-padding-sm bg-[#FAF9F6] border-b border-slate-200/80">
+                    <div className="container-site">
+                        <h3 className="text-xs font-mono-tech font-bold uppercase tracking-widest text-slate-500 mb-6">
+                            Related Infrastructure Works
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {related.map((r) => (
+                                <Link
+                                    key={r.id}
+                                    href={`/projects/${r.slug}`}
+                                    className="p-6 rounded-2xl bg-white border border-slate-200 shadow-matte-sm hover:shadow-matte-md hover:border-slate-300 transition-all flex flex-col justify-between"
+                                >
+                                    <div>
+                                        <div className="text-xs font-mono-tech text-[#185FA5] font-bold uppercase mb-2">
+                                            {r.category}
+                                        </div>
+                                        <h4
+                                            style={{ fontFamily: "var(--font-condensed)" }}
+                                            className="text-2xl font-bold text-[#0d1b2e] leading-snug mb-2"
+                                        >
+                                            {r.title}
+                                        </h4>
+                                    </div>
+                                    <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-mono-tech text-slate-500">
+                                        <span>{r.location}</span>
+                                        <span className="font-bold text-[#0d1b2e]">{r.value}</span>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
 
             <CtaBanner />
         </>

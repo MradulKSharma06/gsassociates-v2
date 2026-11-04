@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Send, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
+import { CustomSelect } from "@/components/ui/CustomSelect";
+import { ArchitecturalButton } from "@/components/ui/ArchitecturalButton";
 
 const schema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
@@ -13,7 +15,7 @@ const schema = z.object({
     phone: z
         .string()
         .regex(/^[+\d\s\-()]{7,15}$/, "Please enter a valid phone number"),
-    subject: z.string().min(1, "Please select a subject"),
+    subject: z.string().min(1, "Please select an inquiry type"),
     message: z.string().min(20, "Message must be at least 20 characters"),
 });
 
@@ -36,6 +38,7 @@ export function ContactForm() {
     const {
         register,
         handleSubmit,
+        control,
         formState: { errors },
         reset,
     } = useForm<FormData>({ resolver: zodResolver(schema) });
@@ -59,9 +62,7 @@ export function ContactForm() {
             reset();
         } catch (err: unknown) {
             console.error("Submission error:", err);
-            // In local static development where Cloudflare Pages Functions are not running:
             if (process.env.NODE_ENV === "development") {
-                console.info("Dev fallback: recording submission locally");
                 setSubmitted(true);
                 reset();
             } else {
@@ -78,121 +79,97 @@ export function ContactForm() {
 
     if (submitted) {
         return (
-            <div
-                className="rounded-card border p-12 flex flex-col items-center justify-center text-center"
-                style={{ background: "var(--color-surface)", borderColor: "var(--color-border)", minHeight: "360px" }}
-            >
-                <div
-                    className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
-                    style={{ background: "var(--color-blue-pale)" }}
-                >
-                    <CheckCircle2 size={32} style={{ color: "var(--color-blue-primary)" }} />
+            <div className="rounded-2xl border border-slate-200 bg-white p-12 flex flex-col items-center justify-center text-center shadow-matte-sm min-h-[380px]">
+                <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mb-5 text-emerald-600">
+                    <CheckCircle2 size={32} />
                 </div>
                 <h3
-                    style={{
-                        fontFamily: "var(--font-condensed)",
-                        fontSize: "28px",
-                        fontWeight: 700,
-                        color: "var(--color-text-primary)",
-                        textTransform: "uppercase",
-                        letterSpacing: "1px",
-                        marginBottom: "10px",
-                    }}
+                    style={{ fontFamily: "var(--font-condensed)" }}
+                    className="text-3xl font-extrabold text-[#0d1b2e] uppercase tracking-wide mb-2"
                 >
                     Inquiry Received
                 </h3>
-                <p className="text-[14px] leading-relaxed max-w-[380px]" style={{ color: "var(--color-text-muted)" }}>
-                    Thank you for reaching out. Your details have been logged into our
-                    system and our engineering team will respond within one business day.
+                <p className="text-sm text-slate-600 max-w-sm leading-relaxed mb-8">
+                    Your specifications have been logged securely. Our engineering estimating team will
+                    review the requirements and respond within one business day.
                 </p>
-                <button
+                <ArchitecturalButton
                     onClick={() => setSubmitted(false)}
-                    className="btn btn-outline mt-8"
+                    variant="wireframe"
+                    size="md"
                 >
-                    Send Another Inquiry
-                </button>
+                    Submit Another Inquiry
+                </ArchitecturalButton>
             </div>
         );
     }
 
     return (
-        <div
-            className="rounded-card border"
-            style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
-        >
-            {/* Form header */}
-            <div
-                className="px-7 py-5 border-b"
-                style={{ borderColor: "var(--color-border)" }}
-            >
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-matte-sm overflow-hidden">
+            {/* Architectural Header */}
+            <div className="px-8 py-6 border-b border-slate-100 bg-[#FAF9F6]">
                 <h2
-                    style={{
-                        fontFamily: "var(--font-condensed)",
-                        fontSize: "22px",
-                        fontWeight: 700,
-                        color: "var(--color-text-primary)",
-                        textTransform: "uppercase",
-                        letterSpacing: "1px",
-                    }}
+                    style={{ fontFamily: "var(--font-condensed)" }}
+                    className="text-2xl font-extrabold text-[#0d1b2e] uppercase tracking-wide"
                 >
-                    Send an Inquiry
+                    Direct Tender & Project Desk
                 </h2>
-                <p className="text-[12px] mt-0.5" style={{ color: "var(--color-text-faint)" }}>
-                    All fields marked * are required. We respond within 1 business day.
+                <p className="text-xs font-mono-tech text-slate-500 mt-1">
+                    All fields marked * are required. Responses dispatched within 24 hours.
                 </p>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="p-7">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
                 {errorMessage && (
-                    <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+                    <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
                         <AlertCircle size={16} className="shrink-0 text-red-600" />
                         <span>{errorMessage}</span>
                     </div>
                 )}
 
                 {/* Row 1 */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label className="form-label">Full Name *</label>
                         <input
                             {...register("name")}
                             className="form-field"
-                            placeholder="Your full name"
+                            placeholder="e.g. S. Rajendran"
                         />
                         {errors.name && (
-                            <p className="text-[11px] mt-1.5" style={{ color: "#c0392b" }}>
+                            <p className="text-[11px] text-red-600 mt-1 font-mono-tech">
                                 {errors.name.message}
                             </p>
                         )}
                     </div>
                     <div>
-                        <label className="form-label">Organization</label>
+                        <label className="form-label">Department / Organization</label>
                         <input
                             {...register("organization")}
                             className="form-field"
-                            placeholder="Department / Company (optional)"
+                            placeholder="e.g. PWD / NHAI / Private"
                         />
                     </div>
                 </div>
 
                 {/* Row 2 */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
-                        <label className="form-label">Email Address *</label>
+                        <label className="form-label">Official Email *</label>
                         <input
                             {...register("email")}
                             type="email"
                             className="form-field"
-                            placeholder="you@example.com"
+                            placeholder="name@gov.in or corporate"
                         />
                         {errors.email && (
-                            <p className="text-[11px] mt-1.5" style={{ color: "#c0392b" }}>
+                            <p className="text-[11px] text-red-600 mt-1 font-mono-tech">
                                 {errors.email.message}
                             </p>
                         )}
                     </div>
                     <div>
-                        <label className="form-label">Phone Number *</label>
+                        <label className="form-label">Contact Number *</label>
                         <input
                             {...register("phone")}
                             type="tel"
@@ -200,70 +177,75 @@ export function ContactForm() {
                             placeholder="+91 XXXXX XXXXX"
                         />
                         {errors.phone && (
-                            <p className="text-[11px] mt-1.5" style={{ color: "#c0392b" }}>
+                            <p className="text-[11px] text-red-600 mt-1 font-mono-tech">
                                 {errors.phone.message}
                             </p>
                         )}
                     </div>
                 </div>
 
-                {/* Subject */}
-                <div className="mb-5">
+                {/* Row 3: Custom Radix Select */}
+                <div>
                     <label className="form-label">Nature of Inquiry *</label>
-                    <select {...register("subject")} className="form-field">
-                        <option value="">Select inquiry type…</option>
-                        {subjects.map((s) => (
-                            <option key={s} value={s}>
-                                {s}
-                            </option>
-                        ))}
-                    </select>
+                    <Controller
+                        name="subject"
+                        control={control}
+                        render={({ field }) => (
+                            <CustomSelect
+                                value={field.value}
+                                onChange={field.onChange}
+                                options={subjects}
+                                placeholder="Select inquiry category…"
+                            />
+                        )}
+                    />
                     {errors.subject && (
-                        <p className="text-[11px] mt-1.5" style={{ color: "#c0392b" }}>
+                        <p className="text-[11px] text-red-600 mt-1 font-mono-tech">
                             {errors.subject.message}
                         </p>
                     )}
                 </div>
 
                 {/* Message */}
-                <div className="mb-7">
-                    <label className="form-label">Message *</label>
+                <div>
+                    <label className="form-label">Project Scope & Specifications *</label>
                     <textarea
                         {...register("message")}
                         className="form-field resize-none"
                         rows={5}
-                        placeholder="Describe your project, requirement, or inquiry in detail…"
+                        placeholder="Detail the scope of work, district location, estimated tender value, or technical inquiry…"
                     />
                     {errors.message && (
-                        <p className="text-[11px] mt-1.5" style={{ color: "#c0392b" }}>
+                        <p className="text-[11px] text-red-600 mt-1 font-mono-tech">
                             {errors.message.message}
                         </p>
                     )}
                 </div>
 
-                {/* Submit */}
-                <button
-                    type="submit"
-                    disabled={submitting}
-                    className="btn btn-primary btn-lg w-full justify-center"
-                    style={{ opacity: submitting ? 0.75 : 1, cursor: submitting ? "not-allowed" : "pointer" }}
-                >
-                    {submitting ? (
-                        <>
-                            <Loader2 size={16} className="animate-spin" />
-                            Submitting to Cloudflare Edge…
-                        </>
-                    ) : (
-                        <>
-                            Submit Inquiry
-                            <Send size={15} />
-                        </>
-                    )}
-                </button>
-
-                <p className="text-[11px] text-center mt-4" style={{ color: "var(--color-text-faint)" }}>
-                    Inquiries are securely encrypted and logged directly to our infrastructure team.
-                </p>
+                {/* Submit Action */}
+                <div className="pt-2">
+                    <button
+                        type="submit"
+                        disabled={submitting}
+                        className="btn btn-primary btn-lg w-full justify-center shadow-matte-md"
+                        style={{ opacity: submitting ? 0.75 : 1, cursor: submitting ? "not-allowed" : "pointer" }}
+                    >
+                        {submitting ? (
+                            <>
+                                <Loader2 size={16} className="animate-spin" />
+                                Submitting to Cloudflare Edge…
+                            </>
+                        ) : (
+                            <>
+                                <span>Submit Project Specifications</span>
+                                <Send size={14} />
+                            </>
+                        )}
+                    </button>
+                    <p className="text-[11px] text-center text-slate-400 mt-3 font-mono-tech">
+                        Direct transmission to GSAssociates Engineering Desk. Privacy protected.
+                    </p>
+                </div>
             </form>
         </div>
     );

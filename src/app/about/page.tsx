@@ -45,90 +45,59 @@ const certifications = [
 export default function AboutPage() {
     return (
         <>
-            {/* Page hero */}
-            <section
-                className="relative overflow-hidden section-padding-sm"
-                style={{ background: "var(--color-navy)" }}
-            >
-                <div className="accent-bar absolute top-0 left-0 right-0" />
-                <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                    <defs>
-                        <pattern id="pg" width="60" height="60" patternUnits="userSpaceOnUse">
-                            <path d="M 60 0 L 0 0 0 60" fill="none" stroke="white" strokeWidth="0.5" />
-                        </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#pg)" />
-                </svg>
+            {/* Architectural Page Hero */}
+            <section className="relative overflow-hidden section-padding-sm bg-[#FAF9F6] border-b border-slate-200/80 blueprint-grid">
                 <div className="container-site relative z-10">
-                    <SectionLabel light>Company</SectionLabel>
+                    <SectionLabel>Institutional Profile</SectionLabel>
                     <h1
-                        style={{
-                            fontFamily: "var(--font-condensed)",
-                            fontSize: "clamp(40px, 6vw, 72px)",
-                            fontWeight: 800,
-                            color: "#fff",
-                            textTransform: "uppercase",
-                            letterSpacing: "2px",
-                            lineHeight: 1,
-                        }}
+                        style={{ fontFamily: "var(--font-condensed)" }}
+                        className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#0d1b2e] uppercase tracking-tight leading-none mt-2"
                     >
-                        About <span style={{ color: "var(--color-blue-bright)" }}>GSAssociates</span>
+                        About <span className="text-[#185FA5]">GSAssociates</span>
                     </h1>
-                    <p className="mt-4 text-[15px] font-light max-w-[560px]" style={{ color: "#8aadcc" }}>
-                        A decade of building Tamil Nadu&apos;s roads, bridges, and civic
-                        infrastructure — with integrity, precision, and pride.
+                    <p className="mt-4 text-base text-slate-600 max-w-xl font-normal">
+                        Over a decade delivering Tamil Nadu&apos;s roads, bridges, and civic
+                        infrastructure — with uncompromising engineering precision and public accountability.
                     </p>
                 </div>
             </section>
 
             {/* Vision & Mission */}
-            <section className="section-padding" style={{ background: "var(--color-surface)" }}>
+            <section className="section-padding bg-white border-b border-slate-200/80">
                 <div className="container-site">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {[
                             {
-                                label: "Our Vision",
-                                heading: "To be Tamil Nadu's most trusted infrastructure builder",
-                                body: "We envision a Tamil Nadu where every citizen has access to world-class roads, reliable bridges, and dignified public buildings — built with integrity, built to last.",
-                                accentColor: "var(--color-blue-primary)",
+                                label: "Our Institutional Vision",
+                                heading: "To be Tamil Nadu's premier infrastructure builder",
+                                body: "We envision a Tamil Nadu where every citizen has access to world-class roads, reliable bridges, and dignified public buildings — built with integrity, built to endure.",
+                                accentColor: "#185FA5",
                             },
                             {
-                                label: "Our Mission",
+                                label: "Our Core Mission",
                                 heading: "Deliver government infrastructure with precision and pride",
                                 body: "Our mission is to execute every public works contract with the highest standards of quality, safety, and timeliness — serving the Government of Tamil Nadu and its citizens with unwavering commitment.",
-                                accentColor: "var(--color-gold)",
+                                accentColor: "#c88a22",
                             },
                         ].map((item) => (
                             <div
                                 key={item.label}
-                                className="rounded-card p-8 border"
-                                style={{
-                                    background: "var(--color-page-bg)",
-                                    borderColor: "var(--color-border)",
-                                    borderLeft: `4px solid ${item.accentColor}`,
-                                }}
+                                className="rounded-2xl p-8 border border-slate-200 bg-[#FAF9F6] shadow-matte-sm"
+                                style={{ borderLeft: `4px solid ${item.accentColor}` }}
                             >
                                 <div
-                                    className="text-[10px] font-bold tracking-[2.5px] uppercase mb-3"
+                                    className="text-[10px] font-mono-tech font-bold tracking-widest uppercase mb-3"
                                     style={{ color: item.accentColor }}
                                 >
                                     {item.label}
                                 </div>
                                 <h2
-                                    style={{
-                                        fontFamily: "var(--font-condensed)",
-                                        fontSize: "26px",
-                                        fontWeight: 700,
-                                        color: "var(--color-text-primary)",
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.5px",
-                                        lineHeight: 1.15,
-                                        marginBottom: "12px",
-                                    }}
+                                    style={{ fontFamily: "var(--font-condensed)" }}
+                                    className="text-2xl sm:text-3xl font-extrabold text-[#0d1b2e] uppercase leading-tight mb-3"
                                 >
                                     {item.heading}
                                 </h2>
-                                <p className="text-[14px] leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
+                                <p className="text-sm text-slate-600 leading-relaxed">
                                     {item.body}
                                 </p>
                             </div>
@@ -138,40 +107,30 @@ export default function AboutPage() {
             </section>
 
             {/* Core Values */}
-            <section className="section-padding" style={{ background: "var(--color-page-bg)" }}>
+            <section className="section-padding bg-[#FAF9F6] border-b border-slate-200/80">
                 <div className="container-site">
                     <div className="text-center mb-12">
-                        <SectionLabel className="justify-center">What We Stand For</SectionLabel>
+                        <SectionLabel className="justify-center">Guiding Principles</SectionLabel>
                         <h2 className="section-heading">Core <span>Values</span></h2>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {values.map((v) => {
                             const Icon = v.icon;
                             return (
                                 <div
                                     key={v.title}
-                                    className="card-base p-6"
+                                    className="p-6 rounded-2xl bg-white border border-slate-200 shadow-matte-sm hover:shadow-matte-md transition-shadow"
                                 >
-                                    <div
-                                        className="w-10 h-10 rounded-[6px] flex items-center justify-center mb-4"
-                                        style={{ background: "var(--color-blue-pale)" }}
-                                    >
-                                        <Icon size={20} style={{ color: "var(--color-blue-primary)" }} />
+                                    <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center mb-4 text-[#185FA5]">
+                                        <Icon size={20} />
                                     </div>
                                     <h3
-                                        style={{
-                                            fontFamily: "var(--font-condensed)",
-                                            fontSize: "18px",
-                                            fontWeight: 700,
-                                            color: "var(--color-text-primary)",
-                                            textTransform: "uppercase",
-                                            letterSpacing: "0.5px",
-                                            marginBottom: "8px",
-                                        }}
+                                        style={{ fontFamily: "var(--font-condensed)" }}
+                                        className="text-xl font-bold text-[#0d1b2e] uppercase mb-2"
                                     >
                                         {v.title}
                                     </h3>
-                                    <p className="text-[13px] leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
+                                    <p className="text-xs text-slate-600 leading-relaxed">
                                         {v.desc}
                                     </p>
                                 </div>
@@ -182,69 +141,44 @@ export default function AboutPage() {
             </section>
 
             {/* Timeline / Milestones */}
-            <section id="milestones" className="section-padding" style={{ background: "var(--color-surface)" }}>
+            <section id="milestones" className="section-padding bg-white border-b border-slate-200/80">
                 <div className="container-site">
                     <div className="mb-12">
-                        <SectionLabel>Our Journey</SectionLabel>
+                        <SectionLabel>Institutional Growth</SectionLabel>
                         <h2 className="section-heading">
                             10 Years of <span>Milestones</span>
                         </h2>
                     </div>
 
                     <div className="relative">
-                        {/* Vertical line */}
-                        <div
-                            className="absolute left-[27px] top-0 bottom-0 w-[1px] lg:left-1/2"
-                            style={{ background: "var(--color-border)" }}
-                        />
+                        <div className="absolute left-[27px] top-0 bottom-0 w-[1px] bg-slate-200 lg:left-1/2" />
 
                         <div className="flex flex-col gap-8">
                             {milestones.map((m, i) => (
                                 <div
                                     key={m.year}
-                                    className={`flex gap-6 relative ${i % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
-                                        }`}
+                                    className={`flex gap-6 relative ${
+                                        i % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
+                                    }`}
                                 >
-                                    {/* Dot */}
-                                    <div
-                                        className="absolute left-[20px] w-[16px] h-[16px] rounded-full border-2 z-10 lg:left-1/2 lg:-translate-x-1/2"
-                                        style={{
-                                            background: "var(--color-blue-primary)",
-                                            borderColor: "var(--color-surface)",
-                                            boxShadow: "0 0 0 3px var(--color-blue-pale)",
-                                        }}
-                                    />
+                                    <div className="absolute left-[20px] w-4 h-4 rounded-full border-2 border-white bg-[#185FA5] shadow-[0_0_0_3px_#dbeafe] z-10 lg:left-1/2 lg:-translate-x-1/2" />
 
-                                    {/* Content */}
                                     <div className="ml-12 lg:ml-0 lg:w-[calc(50%-2rem)]">
                                         <div
-                                            className={`rounded-card p-5 border ${i % 2 === 0 ? "lg:mr-8" : "lg:ml-8"
-                                                }`}
-                                            style={{
-                                                background: "var(--color-page-bg)",
-                                                borderColor: "var(--color-border)",
-                                            }}
+                                            className={`p-6 rounded-2xl border border-slate-200 bg-[#FAF9F6] shadow-matte-sm ${
+                                                i % 2 === 0 ? "lg:mr-8" : "lg:ml-8"
+                                            }`}
                                         >
-                                            <div
-                                                className="text-[10px] font-bold tracking-[2.5px] uppercase mb-1"
-                                                style={{ color: "var(--color-blue-primary)" }}
-                                            >
+                                            <div className="text-[11px] font-mono-tech font-bold uppercase text-[#185FA5] mb-1">
                                                 {m.year}
                                             </div>
                                             <h3
-                                                style={{
-                                                    fontFamily: "var(--font-condensed)",
-                                                    fontSize: "18px",
-                                                    fontWeight: 700,
-                                                    color: "var(--color-text-primary)",
-                                                    textTransform: "uppercase",
-                                                    letterSpacing: "0.5px",
-                                                    marginBottom: "4px",
-                                                }}
+                                                style={{ fontFamily: "var(--font-condensed)" }}
+                                                className="text-xl font-bold text-[#0d1b2e] uppercase mb-1"
                                             >
                                                 {m.title}
                                             </h3>
-                                            <p className="text-[13px] leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
+                                            <p className="text-xs text-slate-600 leading-relaxed">
                                                 {m.desc}
                                             </p>
                                         </div>
@@ -256,84 +190,21 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            {/* Leadership Team */}
-            <section id="team" className="section-padding" style={{ background: "var(--color-page-bg)" }}>
+            {/* Certifications Strip */}
+            <section id="certifications" className="section-padding-sm bg-[#FAF9F6]">
                 <div className="container-site">
-                    <div className="text-center mb-12">
-                        <SectionLabel className="justify-center">Leadership</SectionLabel>
-                        <h2 className="section-heading">Our <span>Team</span></h2>
+                    <div className="text-center mb-8">
+                        <SectionLabel className="justify-center">Accreditation</SectionLabel>
+                        <h2 className="section-heading text-3xl">Certifications &amp; Standards</h2>
                     </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        {team.map((member) => (
-                            <div key={member.id} className="card-base p-6 text-center">
-                                {/* Avatar placeholder */}
-                                <div
-                                    className="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center"
-                                    style={{ background: "var(--color-blue-pale)" }}
-                                >
-                                    <span
-                                        style={{
-                                            fontFamily: "var(--font-condensed)",
-                                            fontSize: "28px",
-                                            fontWeight: 800,
-                                            color: "var(--color-blue-primary)",
-                                        }}
-                                    >
-                                        {member.name
-                                            .split(" ")
-                                            .map((n) => n[0])
-                                            .slice(0, 2)
-                                            .join("")}
-                                    </span>
-                                </div>
-                                <h3
-                                    style={{
-                                        fontFamily: "var(--font-condensed)",
-                                        fontSize: "20px",
-                                        fontWeight: 700,
-                                        color: "var(--color-text-primary)",
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.5px",
-                                        marginBottom: "4px",
-                                    }}
-                                >
-                                    {member.name}
-                                </h3>
-                                <div
-                                    className="text-[10px] font-bold tracking-[1.5px] uppercase mb-3"
-                                    style={{ color: "var(--color-blue-primary)" }}
-                                >
-                                    {member.designation}
-                                </div>
-                                <p className="text-[13px] leading-relaxed" style={{ color: "var(--color-text-muted)" }}>
-                                    {member.bio}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Certifications */}
-            <section id="certifications" className="section-padding-sm" style={{ background: "var(--color-surface)", borderTop: "1px solid var(--color-border)" }}>
-                <div className="container-site">
-                    <div className="mb-8">
-                        <SectionLabel>Credentials</SectionLabel>
-                        <h2 className="section-heading">
-                            Certifications <span>&amp; Empanelments</span>
-                        </h2>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {certifications.map((cert) => (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                        {certifications.map((c) => (
                             <div
-                                key={cert}
-                                className="flex items-center gap-3 p-4 rounded-card border"
-                                style={{ borderColor: "var(--color-border)", background: "var(--color-page-bg)" }}
+                                key={c}
+                                className="p-4 rounded-xl bg-white border border-slate-200 text-center shadow-matte-sm flex flex-col justify-center"
                             >
-                                <CheckCircle2 size={16} style={{ color: "var(--color-blue-primary)" }} className="shrink-0" />
-                                <span className="text-[13px] font-500" style={{ color: "var(--color-text-body)" }}>
-                                    {cert}
+                                <span className="text-xs font-mono-tech font-bold uppercase text-[#0d1b2e]">
+                                    {c}
                                 </span>
                             </div>
                         ))}

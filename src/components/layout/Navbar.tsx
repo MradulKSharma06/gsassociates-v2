@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
 
 const navLinks = [
     { href: "/", label: "Home" },
@@ -21,98 +22,105 @@ export function Navbar() {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 40);
+        const onScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener("scroll", onScroll, { passive: true });
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
-    // Close mobile menu on route change
     useEffect(() => setMobileOpen(false), [pathname]);
 
     return (
-        <>
-            <header
+        <header className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+            <div
                 className={cn(
-                    "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+                    "pointer-events-auto w-full max-w-5xl rounded-full transition-all duration-300 flex items-center justify-between px-5 sm:px-7 py-3 border",
                     scrolled
-                        ? "bg-navy shadow-[0_2px_20px_rgba(13,27,46,0.25)] py-0"
-                        : "bg-navy/95 backdrop-blur-sm py-0"
+                        ? "bg-white/95 backdrop-blur-md border-slate-300 shadow-matte-md"
+                        : "bg-white/90 backdrop-blur-md border-slate-200/90 shadow-matte-sm"
                 )}
             >
-                {/* Accent bar at very top */}
-                <div className="accent-bar h-[3px]" />
-
-                <div className="container-site">
-                    <div className="flex items-center justify-between h-16">
-                        {/* Logo */}
-                        <Link href="/" className="flex items-center gap-3 group">
-                            <div className="flex flex-col leading-none">
-                                <span
-                                    style={{ fontFamily: "var(--font-condensed)" }}
-                                    className="text-[22px] font-extrabold text-white tracking-[2px] uppercase leading-none"
-                                >
-                                    GS
-                                    <span className="text-blue-bright">ASSOCIATES</span>
-                                </span>
-                                <span className="text-[9px] font-semibold tracking-[2.5px] uppercase text-blue-light/50 leading-none mt-0.5">
-                                    Construction Pvt. Ltd.
-                                </span>
-                            </div>
-                        </Link>
-
-                        {/* Desktop Nav */}
-                        <nav className="hidden lg:flex items-center gap-8">
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    className={cn(
-                                        "nav-link-item",
-                                        pathname === link.href && "active"
-                                    )}
-                                >
-                                    {link.label}
-                                </Link>
-                            ))}
-                        </nav>
-
-                        {/* CTA + Mobile Toggle */}
-                        <div className="flex items-center gap-4">
-                            <Link
-                                href="/contact"
-                                className="hidden lg:inline-flex btn btn-primary btn-sm"
-                            >
-                                Get In Touch
-                            </Link>
-
-                            <button
-                                onClick={() => setMobileOpen((p) => !p)}
-                                className="lg:hidden text-blue-light/70 hover:text-white transition-colors p-1"
-                                aria-label="Toggle menu"
-                            >
-                                {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-                            </button>
-                        </div>
+                {/* Brand Logo */}
+                <Link href="/" className="flex items-center gap-2 group select-none">
+                    <div className="flex flex-col leading-none">
+                        <span
+                            style={{ fontFamily: "var(--font-condensed)" }}
+                            className="text-xl sm:text-2xl font-extrabold text-[#0d1b2e] tracking-wider uppercase leading-none"
+                        >
+                            GS<span className="text-[#185FA5]">ASSOCIATES</span>
+                        </span>
+                        <span className="text-[8px] sm:text-[9px] font-mono-tech tracking-widest uppercase text-slate-500 leading-none mt-0.5">
+                            Construction Pvt. Ltd.
+                        </span>
                     </div>
-                </div>
+                </Link>
 
-                {/* Mobile Menu */}
-                <div
-                    className={cn(
-                        "lg:hidden bg-navy border-t border-navy-700 overflow-hidden transition-all duration-300",
-                        mobileOpen ? "max-h-screen py-4" : "max-h-0"
-                    )}
-                >
-                    <div className="container-site flex flex-col gap-1">
+                {/* Desktop Nav Links */}
+                <nav className="hidden md:flex items-center gap-1 bg-slate-100/70 p-1 rounded-full border border-slate-200/60">
+                    {navLinks.map((link) => {
+                        const isActive = pathname === link.href;
+                        return (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className={cn(
+                                    "relative px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-full transition-colors",
+                                    isActive
+                                        ? "text-white"
+                                        : "text-slate-600 hover:text-[#0d1b2e]"
+                                )}
+                            >
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="navActivePill"
+                                        className="absolute inset-0 bg-[#0d1b2e] rounded-full z-0"
+                                        transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                                    />
+                                )}
+                                <span className="relative z-10">{link.label}</span>
+                            </Link>
+                        );
+                    })}
+                </nav>
+
+                {/* Right Action: Capsule CTA */}
+                <div className="flex items-center gap-3">
+                    <Link
+                        href="/contact"
+                        className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider text-white bg-[#0d1b2e] hover:bg-[#162a42] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_2px_6px_rgba(13,27,46,0.12)] transition-all"
+                    >
+                        <span>Tender Inquiries</span>
+                        <ArrowUpRight size={13} />
+                    </Link>
+
+                    {/* Mobile Hamburger Button */}
+                    <button
+                        onClick={() => setMobileOpen((p) => !p)}
+                        className="md:hidden text-slate-700 hover:text-[#0d1b2e] p-1.5 rounded-full hover:bg-slate-100 transition-colors"
+                        aria-label="Toggle menu"
+                    >
+                        {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+                    </button>
+                </div>
+            </div>
+
+            {/* Mobile Dropdown Panel */}
+            <AnimatePresence>
+                {mobileOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="pointer-events-auto absolute top-20 left-4 right-4 bg-white/95 backdrop-blur-xl border border-slate-200 rounded-2xl p-5 shadow-matte-lg md:hidden z-50 flex flex-col gap-2"
+                    >
                         {navLinks.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
                                 className={cn(
-                                    "text-[11px] font-bold tracking-[1.5px] uppercase py-3 border-b border-navy-700/50",
+                                    "px-4 py-2.5 rounded-xl text-sm font-bold uppercase tracking-wider transition-colors",
                                     pathname === link.href
-                                        ? "text-blue-bright"
-                                        : "text-slate-400 hover:text-white"
+                                        ? "bg-[#0d1b2e] text-white"
+                                        : "text-slate-700 hover:bg-slate-100"
                                 )}
                             >
                                 {link.label}
@@ -120,16 +128,14 @@ export function Navbar() {
                         ))}
                         <Link
                             href="/contact"
-                            className="btn btn-primary btn-sm mt-3 w-full text-center"
+                            className="w-full justify-center mt-3 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider text-white bg-[#0d1b2e] hover:bg-[#162a42] border border-white/10 shadow-sm"
                         >
-                            Get In Touch
+                            <span>Tender Inquiries</span>
+                            <ArrowUpRight size={14} />
                         </Link>
-                    </div>
-                </div>
-            </header>
-
-            {/* Spacer for fixed header */}
-            <div className="h-[67px]" />
-        </>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </header>
     );
 }

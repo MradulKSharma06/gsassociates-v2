@@ -1,26 +1,34 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow, Barlow_Condensed } from "next/font/google";
+import { Barlow, Barlow_Condensed, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollProgressBar } from "@/components/ui/ScrollProgressBar";
+import { SmoothScrollProvider } from "@/components/ui/SmoothScrollProvider";
 
-const barlow = Barlow({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-barlow",
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-sans",
   display: "swap",
 });
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["600", "700", "800", "900"],
   variable: "--font-barlow-condensed",
   display: "swap",
 });
 
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
 export const viewport: Viewport = {
-  themeColor: "#0d1b2e",
+  themeColor: "#FAF9F6",
 };
 
 export const metadata: Metadata = {
@@ -54,13 +62,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${barlow.variable} ${barlowCondensed.variable}`}
+      className={`${jakarta.variable} ${barlowCondensed.variable} ${mono.variable}`}
     >
-      <body className="antialiased">
-        <ScrollProgressBar />
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+      <body className="antialiased bg-[#FAF9F6] text-[#374151]">
+        <SmoothScrollProvider>
+          <ScrollProgressBar />
+          <Navbar />
+          <main className="pt-24">{children}</main>
+          <Footer />
+        </SmoothScrollProvider>
       </body>
     </html>
   );

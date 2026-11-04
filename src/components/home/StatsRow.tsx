@@ -7,11 +7,9 @@ import { stats } from "@/data/stats";
 function StatItem({
     stat,
     enabled,
-    delay,
 }: {
     stat: (typeof stats)[0];
     enabled: boolean;
-    delay: number;
 }) {
     const value = useCountUp({
         end: stat.value,
@@ -21,25 +19,16 @@ function StatItem({
     });
 
     return (
-        <div
-            className="reveal"
-            style={{
-                transitionDelay: `${delay}ms`,
-            }}
-        >
-            <div className="stat-number">
-                {stat.prefix && (
-                    <span className="text-[0.55em] font-extrabold" style={{ color: "var(--color-blue-primary)" }}>
-                        {stat.prefix}
-                    </span>
-                )}
-                {value}
-                <span className="stat-unit">{stat.suffix}</span>
-            </div>
+        <div className="flex flex-col">
             <div
-                className="text-[10px] font-bold tracking-[2px] uppercase mt-2"
-                style={{ color: "var(--color-text-faint)" }}
+                style={{ fontFamily: "var(--font-condensed)" }}
+                className="text-4xl sm:text-5xl font-extrabold text-[#0d1b2e] tracking-tight leading-none"
             >
+                {stat.prefix && <span className="text-[#185FA5] text-[0.7em] mr-0.5">{stat.prefix}</span>}
+                {value}
+                <span className="text-[#c88a22] text-[0.6em] ml-0.5">{stat.suffix}</span>
+            </div>
+            <div className="text-xs font-mono-tech uppercase tracking-wider text-slate-500 mt-2 font-semibold">
                 {stat.label}
             </div>
         </div>
@@ -47,32 +36,18 @@ function StatItem({
 }
 
 export function StatsRow() {
-    const { ref, isVisible } = useIntersection({ threshold: 0.3 });
+    const { ref, isVisible } = useIntersection({ threshold: 0.2 });
 
     return (
-        <section
-            className="border-y"
-            style={{
-                borderColor: "var(--color-border)",
-                background: "var(--color-surface)",
-            }}
-        >
-            <div className="container-site py-14">
+        <section className="bg-white border-b border-slate-200/80 py-12">
+            <div className="container-site">
                 <div
                     ref={ref as React.RefObject<HTMLDivElement>}
-                    className={`grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 lg:divide-x`}
-                    style={{ "--tw-divide-opacity": 1 } as React.CSSProperties}
+                    className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 lg:divide-x divide-slate-200"
                 >
-                    {stats.map((stat, i) => (
-                        <div
-                            key={stat.label}
-                            className={`lg:px-10 first:pl-0 last:pr-0 ${isVisible ? "revealed" : ""}`}
-                        >
-                            <StatItem
-                                stat={stat}
-                                enabled={isVisible}
-                                delay={i * 100}
-                            />
+                    {stats.map((stat) => (
+                        <div key={stat.label} className="lg:px-8 first:pl-0 last:pr-0">
+                            <StatItem stat={stat} enabled={isVisible} />
                         </div>
                     ))}
                 </div>

@@ -4,29 +4,18 @@ import Link from "next/link";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { Badge } from "@/components/ui/Badge";
 import { projects } from "@/data/projects";
-import { ArrowRight, MapPin, Building2, CheckCircle2 } from "lucide-react";
+import { ArrowRight, MapPin, Building2, CheckCircle2, ArrowUpRight } from "lucide-react";
 import { MotionWrapper } from "@/components/ui/MotionWrapper";
 
 const featured = projects.filter((p) => p.featured).slice(0, 3);
 const flagship = featured[0];
-const subFeatured = featured.slice(1, 3);
-
-const categoryColors: Record<string, string> = {
-    "Road & Highway": "var(--color-blue-primary)",
-    "Bridges & Flyovers": "var(--color-navy-700)",
-    "Government Buildings": "var(--color-gold)",
-    "Water Infrastructure": "#1a6690",
-    "Urban Development": "#2d7a6c",
-};
+const secondary = featured.slice(1, 3);
 
 export function FeaturedProjects() {
     return (
-        <section
-            className="section-padding"
-            style={{ background: "var(--color-page-bg)" }}
-        >
+        <section className="section-padding bg-[#FAF9F6] border-b border-slate-200/80">
             <div className="container-site">
-                {/* Header */}
+                {/* Section Header */}
                 <MotionWrapper direction="up">
                     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
                         <div>
@@ -35,15 +24,15 @@ export function FeaturedProjects() {
                                 Landmark <span>Projects</span>
                             </h2>
                             <p className="section-subheading mt-3">
-                                High-capacity highways, civic landmarks, and heavy structural crossings
-                                delivered across Tamil Nadu.
+                                High-capacity expressways, civic headquarters, and multi-tier grade
+                                separators delivered across Tamil Nadu with zero structural defects.
                             </p>
                         </div>
                         <Link
                             href="/projects"
                             className="btn btn-outline shrink-0 self-start sm:self-auto group"
                         >
-                            <span>Explore Full Portfolio</span>
+                            <span>All 200+ Projects</span>
                             <ArrowRight
                                 size={14}
                                 className="transition-transform group-hover:translate-x-1"
@@ -52,85 +41,77 @@ export function FeaturedProjects() {
                     </div>
                 </MotionWrapper>
 
-                {/* Flagship Hero Card */}
-                {flagship && (
-                    <MotionWrapper direction="up" delay={0.1} className="mb-6">
-                        <Link
-                            href={`/projects/${flagship.slug}`}
-                            className="group block rounded-card border bg-white overflow-hidden shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1"
-                            style={{ borderColor: "var(--color-border)" }}
-                        >
-                            <div className="grid grid-cols-1 lg:grid-cols-12">
-                                {/* Banner Visual Side */}
-                                <div
-                                    className="lg:col-span-5 relative p-8 flex flex-col justify-between overflow-hidden min-h-[260px]"
-                                    style={{
-                                        background: "linear-gradient(135deg, #0d1b2e 0%, #185FA5 100%)",
-                                    }}
-                                >
-                                    {/* Architectural CAD Grid */}
+                {/* Bento Grid Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Flagship Card (Spans 7 Columns) */}
+                    {flagship && (
+                        <MotionWrapper direction="up" delay={0.08} className="lg:col-span-7">
+                            <Link
+                                href={`/projects/${flagship.slug}`}
+                                className="group flex flex-col h-full rounded-2xl bg-white border border-slate-200/90 shadow-matte-sm hover:shadow-matte-lg hover:border-slate-300 transition-all duration-300 overflow-hidden"
+                            >
+                                {/* Top Technical CAD Blueprint Header */}
+                                <div className="p-7 sm:p-9 bg-[#F4F5F7] border-b border-slate-200/80 relative overflow-hidden">
+                                    {/* Blueprint CAD Fine Grid */}
                                     <svg
-                                        className="absolute inset-0 w-full h-full opacity-10"
+                                        className="absolute inset-0 w-full h-full opacity-30"
                                         xmlns="http://www.w3.org/2000/svg"
                                         aria-hidden
                                     >
                                         <defs>
                                             <pattern
-                                                id="flagshipGrid"
-                                                width="30"
-                                                height="30"
+                                                id="flagshipCad"
+                                                width="24"
+                                                height="24"
                                                 patternUnits="userSpaceOnUse"
                                             >
                                                 <path
-                                                    d="M 30 0 L 0 0 0 30"
+                                                    d="M 24 0 L 0 0 0 24"
                                                     fill="none"
-                                                    stroke="white"
-                                                    strokeWidth="0.5"
+                                                    stroke="#0d1b2e"
+                                                    strokeWidth="0.4"
                                                 />
                                             </pattern>
                                         </defs>
-                                        <rect width="100%" height="100%" fill="url(#flagshipGrid)" />
+                                        <rect width="100%" height="100%" fill="url(#flagshipCad)" />
                                     </svg>
 
-                                    <div className="relative z-10 flex items-center justify-between">
-                                        <Badge variant="gold">Flagship Project</Badge>
-                                        <span className="text-[10px] font-bold tracking-widest uppercase text-white/70">
+                                    <div className="relative z-10 flex items-center justify-between mb-6">
+                                        <div className="flex items-center gap-2">
+                                            <span className="badge badge-gold">Flagship Project</span>
+                                            <span className="badge badge-blue">{flagship.category}</span>
+                                        </div>
+                                        <span className="text-xs font-mono-tech text-slate-500">
                                             {flagship.year}
                                         </span>
                                     </div>
 
-                                    <div className="relative z-10 my-6">
-                                        <div className="text-xs uppercase tracking-widest text-blue-200 font-semibold mb-1">
-                                            Project Value
+                                    <div className="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                                        <div>
+                                            <div className="text-[10px] font-mono-tech uppercase tracking-wider text-slate-500 mb-1">
+                                                Tender Project Value
+                                            </div>
+                                            <div
+                                                style={{ fontFamily: "var(--font-condensed)" }}
+                                                className="text-4xl sm:text-5xl font-extrabold text-[#0d1b2e] tracking-tight"
+                                            >
+                                                {flagship.value}
+                                            </div>
                                         </div>
-                                        <div
-                                            style={{ fontFamily: "var(--font-condensed)" }}
-                                            className="text-4xl sm:text-5xl font-extrabold text-white tracking-wide drop-shadow"
-                                        >
-                                            {flagship.value}
-                                        </div>
-                                    </div>
 
-                                    <div className="relative z-10 flex items-center gap-2 text-xs text-white/80">
-                                        <Building2 size={13} className="shrink-0 text-gold" />
-                                        <span className="truncate">{flagship.client}</span>
+                                        <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 w-fit">
+                                            <CheckCircle2 size={13} />
+                                            <span>{flagship.status} · Verified Handover</span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                {/* Content Side */}
-                                <div className="lg:col-span-7 p-7 sm:p-9 flex flex-col justify-between">
+                                {/* Bottom Body Content */}
+                                <div className="p-7 sm:p-9 flex flex-col flex-1 justify-between">
                                     <div>
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <Badge variant="blue">{flagship.category}</Badge>
-                                            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                                                <CheckCircle2 size={10} />
-                                                {flagship.status}
-                                            </span>
-                                        </div>
-
                                         <h3
                                             style={{ fontFamily: "var(--font-condensed)" }}
-                                            className="text-2xl sm:text-3xl font-bold text-navy group-hover:text-blue-primary transition-colors leading-tight mb-4"
+                                            className="text-2xl sm:text-3xl font-bold text-[#0d1b2e] group-hover:text-[#185FA5] transition-colors leading-tight mb-3"
                                         >
                                             {flagship.title}
                                         </h3>
@@ -139,103 +120,85 @@ export function FeaturedProjects() {
                                             {flagship.description}
                                         </p>
 
-                                        {/* Highlights list */}
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-6">
-                                            {flagship.highlights.slice(0, 4).map((h, idx) => (
+                                        {/* Highlights Pill Matrix */}
+                                        <div className="grid grid-cols-2 gap-2.5 mb-6">
+                                            {flagship.highlights.slice(0, 4).map((h, i) => (
                                                 <div
-                                                    key={idx}
-                                                    className="flex items-center gap-2 text-xs text-slate-700"
+                                                    key={i}
+                                                    className="flex items-center gap-2 text-xs font-mono-tech text-slate-700"
                                                 >
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-primary shrink-0" />
-                                                    <span>{h}</span>
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-[#185FA5] shrink-0" />
+                                                    <span className="truncate">{h}</span>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
 
-                                    <div className="pt-5 border-t border-slate-100 flex items-center justify-between">
-                                        <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                                            <MapPin size={13} className="text-slate-400" />
-                                            <span>{flagship.location}</span>
+                                    <div className="pt-5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                                        <div className="flex items-center gap-1.5 truncate">
+                                            <Building2 size={13} className="text-slate-400 shrink-0" />
+                                            <span className="truncate">{flagship.client}</span>
                                         </div>
-                                        <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-primary group-hover:text-blue-bright transition-colors">
-                                            <span>Read Project Dossier</span>
-                                            <ArrowRight
-                                                size={14}
-                                                className="transition-transform group-hover:translate-x-1"
-                                            />
+                                        <span className="inline-flex items-center gap-1 font-bold uppercase tracking-wider text-[#185FA5] group-hover:text-[#0d1b2e] transition-colors shrink-0">
+                                            <span>View Dossier</span>
+                                            <ArrowUpRight size={13} />
                                         </span>
                                     </div>
                                 </div>
-                            </div>
-                        </Link>
-                    </MotionWrapper>
-                )}
+                            </Link>
+                        </MotionWrapper>
+                    )}
 
-                {/* Secondary Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {subFeatured.map((project, idx) => {
-                        const accentColor =
-                            categoryColors[project.category] ?? "var(--color-blue-primary)";
-
-                        return (
-                            <MotionWrapper key={project.id} direction="up" delay={0.15 + idx * 0.1}>
+                    {/* Secondary 2 Cards (Spans 5 Columns in Stack) */}
+                    <div className="lg:col-span-5 flex flex-col gap-6">
+                        {secondary.map((project, idx) => (
+                            <MotionWrapper
+                                key={project.id}
+                                direction="up"
+                                delay={0.12 + idx * 0.08}
+                                className="flex-1"
+                            >
                                 <Link
                                     href={`/projects/${project.slug}`}
-                                    className="group flex flex-col h-full rounded-card border bg-white overflow-hidden shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1"
-                                    style={{ borderColor: "var(--color-border)" }}
+                                    className="group flex flex-col justify-between h-full p-6 sm:p-7 rounded-2xl bg-white border border-slate-200/90 shadow-matte-sm hover:shadow-matte-lg hover:border-slate-300 transition-all duration-300"
                                 >
-                                    <div
-                                        className="h-36 relative p-6 flex flex-col justify-between overflow-hidden"
-                                        style={{
-                                            background: `linear-gradient(135deg, ${accentColor}dd 0%, #0d1b2e 100%)`,
-                                        }}
-                                    >
-                                        <div className="flex items-center justify-between z-10">
-                                            <Badge variant="navy">{project.category}</Badge>
-                                            <span className="text-xs font-extrabold text-white tracking-wider">
+                                    <div>
+                                        <div className="flex items-center justify-between mb-4">
+                                            <Badge variant="blue">{project.category}</Badge>
+                                            <span
+                                                style={{ fontFamily: "var(--font-condensed)" }}
+                                                className="text-2xl font-extrabold text-[#0d1b2e]"
+                                            >
                                                 {project.value}
                                             </span>
                                         </div>
-                                        <span
+
+                                        <h3
                                             style={{ fontFamily: "var(--font-condensed)" }}
-                                            className="absolute bottom-2 right-4 text-6xl font-extrabold text-white/10 select-none pointer-events-none"
+                                            className="text-xl sm:text-2xl font-bold text-[#0d1b2e] group-hover:text-[#185FA5] transition-colors leading-snug mb-2"
                                         >
-                                            0{idx + 2}
-                                        </span>
+                                            {project.title}
+                                        </h3>
+
+                                        <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-4">
+                                            {project.description}
+                                        </p>
                                     </div>
 
-                                    <div className="p-6 flex flex-col flex-1 justify-between">
-                                        <div>
-                                            <h3
-                                                style={{ fontFamily: "var(--font-condensed)" }}
-                                                className="text-xl font-bold text-navy group-hover:text-blue-primary transition-colors leading-tight mb-2.5"
-                                            >
-                                                {project.title}
-                                            </h3>
-                                            <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-4">
-                                                {project.description}
-                                            </p>
-                                        </div>
-
-                                        <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                                            <span className="flex items-center gap-1.5 truncate">
-                                                <MapPin size={12} className="text-slate-400" />
-                                                {project.location}
-                                            </span>
-                                            <span className="inline-flex items-center gap-1 font-bold uppercase tracking-wider text-blue-primary group-hover:text-blue-bright transition-colors shrink-0">
-                                                <span>View Dossier</span>
-                                                <ArrowRight
-                                                    size={13}
-                                                    className="transition-transform group-hover:translate-x-1"
-                                                />
-                                            </span>
-                                        </div>
+                                    <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                                        <span className="flex items-center gap-1.5 truncate">
+                                            <MapPin size={12} className="text-slate-400 shrink-0" />
+                                            <span className="truncate">{project.location}</span>
+                                        </span>
+                                        <span className="inline-flex items-center gap-1 font-bold uppercase tracking-wider text-[#185FA5] group-hover:text-[#0d1b2e] transition-colors shrink-0">
+                                            <span>Inspect Specs</span>
+                                            <ArrowUpRight size={13} />
+                                        </span>
                                     </div>
                                 </Link>
                             </MotionWrapper>
-                        );
-                    })}
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>

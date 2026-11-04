@@ -1,41 +1,41 @@
 import Link from "next/link";
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, ShieldCheck, ArrowUpRight } from "lucide-react";
 
 const navCols = [
     {
         heading: "Company",
         links: [
-            { label: "About Us", href: "/about" },
-            { label: "Our Team", href: "/about#team" },
-            { label: "Milestones", href: "/about#milestones" },
-            { label: "Certifications", href: "/about#certifications" },
+            { label: "About GSAssociates", href: "/about" },
+            { label: "Leadership & Team", href: "/about#team" },
+            { label: "10-Year Milestones", href: "/about#milestones" },
+            { label: "ISO Certifications", href: "/about#certifications" },
         ],
     },
     {
-        heading: "Services",
+        heading: "Specializations",
         links: [
-            { label: "Road & Highway", href: "/services#road-highway" },
+            { label: "Roads & Highways", href: "/services#road-highway" },
             { label: "Bridges & Flyovers", href: "/services#bridges" },
-            { label: "Govt. Buildings", href: "/services#buildings" },
+            { label: "Government Complexes", href: "/services#buildings" },
             { label: "Water Infrastructure", href: "/services#water" },
         ],
     },
     {
-        heading: "Projects",
+        heading: "Portfolios",
         links: [
             { label: "All Projects", href: "/projects" },
-            { label: "Road Projects", href: "/projects?cat=Road+%26+Highway" },
-            { label: "Bridge Projects", href: "/projects?cat=Bridges+%26+Flyovers" },
-            { label: "Ongoing Works", href: "/projects?status=Ongoing" },
+            { label: "Highway Works", href: "/projects" },
+            { label: "Structural Bridges", href: "/projects" },
+            { label: "Active Tenders", href: "/clients" },
         ],
     },
 ];
 
 export function Footer() {
     return (
-        <footer className="bg-navy">
-            {/* Accent bar */}
-            <div className="accent-bar" />
+        <footer className="bg-[#0d1b2e] text-white">
+            {/* Top architectural accent bar */}
+            <div className="h-[3px] bg-gradient-to-r from-[#185FA5] via-[#2563eb] to-[#c88a22]" />
 
             <div className="container-site py-16">
                 <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-12">
@@ -44,73 +44,46 @@ export function Footer() {
                         <div className="mb-5">
                             <span
                                 style={{ fontFamily: "var(--font-condensed)" }}
-                                className="text-[26px] font-extrabold text-white tracking-[2px] uppercase"
+                                className="text-2xl sm:text-3xl font-extrabold text-white tracking-wider uppercase leading-none"
                             >
-                                GS
-                                <span className="text-blue-bright">ASSOCIATES</span>
+                                GS<span className="text-[#378ADD]">ASSOCIATES</span>
                             </span>
-                            <div className="text-[9px] font-semibold tracking-[2.5px] uppercase text-blue-light/40 mt-0.5">
-                                Construction Pvt. Ltd.
+                            <div className="text-[9px] font-mono-tech tracking-widest uppercase text-slate-400 mt-1">
+                                Construction Pvt. Ltd. · Class A Contractor
                             </div>
                         </div>
 
-                        <p className="text-[13px] text-slate-muted leading-relaxed max-w-[300px] mb-6">
-                            Tamil Nadu&apos;s trusted infrastructure partner for over a decade.
-                            Building highways, bridges, and civic landmarks for the Government
-                            of Tamil Nadu.
+                        <p className="text-sm text-slate-400 leading-relaxed max-w-sm mb-6">
+                            Tamil Nadu&apos;s trusted civil infrastructure partner for over a decade.
+                            Building high-capacity expressways, structural bridges, and civic headquarters
+                            for the Government of Tamil Nadu and Central Authorities.
                         </p>
 
-                        {/* Contact info */}
-                        <div className="flex flex-col gap-3">
-                            <div className="flex items-start gap-3">
-                                <MapPin size={14} className="text-blue-bright mt-0.5 shrink-0" />
-                                <span className="text-[12px] text-slate-muted">
-                                    45, Anna Salai, Teynampet,
-                                    <br />
-                                    Chennai — 600 018, Tamil Nadu
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <Phone size={14} className="text-blue-bright shrink-0" />
-                                <a
-                                    href="tel:+914412345678"
-                                    className="text-[12px] text-slate-muted hover:text-white transition-colors"
-                                >
-                                    +91 44 1234 5678
-                                </a>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <Mail size={14} className="text-blue-bright shrink-0" />
-                                <a
-                                    href="mailto:info@GSAssociates.in"
-                                    className="text-[12px] text-slate-muted hover:text-white transition-colors"
-                                >
-                                    info@GSAssociates.in
-                                </a>
-                            </div>
-                            <div className="flex items-start gap-3">
-                                <Clock size={14} className="text-blue-bright mt-0.5 shrink-0" />
-                                <span className="text-[12px] text-slate-muted">
-                                    Mon – Sat, 9:00 AM – 6:00 PM
-                                </span>
-                            </div>
+                        <div className="flex items-center gap-2 text-xs font-mono-tech text-amber-400/90 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg w-fit">
+                            <ShieldCheck size={14} className="text-[#c88a22]" />
+                            <span>Empanelled: TNPWD · NHAI · TNRDC · TWAD</span>
                         </div>
                     </div>
 
-                    {/* Nav columns */}
+                    {/* Navigation Columns */}
                     {navCols.map((col) => (
                         <div key={col.heading}>
                             <h4
-                                className="text-[10px] font-bold tracking-[2.5px] uppercase mb-5"
-                                style={{ color: "var(--color-blue-bright)" }}
+                                style={{ fontFamily: "var(--font-condensed)" }}
+                                className="text-base font-bold uppercase tracking-wider text-white mb-4"
                             >
                                 {col.heading}
                             </h4>
                             <ul className="flex flex-col gap-2.5">
                                 {col.links.map((link) => (
-                                    <li key={link.href}>
-                                        <Link href={link.href} className="footer-link-item text-[13px]">
-                                            {link.label}
+                                    <li key={link.label}>
+                                        <Link
+                                            href={link.href}
+                                            className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1 group"
+                                        >
+                                            <span className="group-hover:translate-x-0.5 transition-transform">
+                                                {link.label}
+                                            </span>
                                         </Link>
                                     </li>
                                 ))}
@@ -119,25 +92,15 @@ export function Footer() {
                     ))}
                 </div>
 
-                {/* Bottom bar */}
-                <div className="mt-12 pt-6 border-t border-navy-700 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p className="text-[11px] text-slate-muted/60">
-                        © {new Date().getFullYear()} GSAssociates Construction Pvt. Ltd. All
-                        rights reserved.
-                    </p>
-                    <div className="flex items-center gap-6">
-                        <Link
-                            href="/privacy"
-                            className="text-[11px] text-slate-muted/50 hover:text-slate-muted transition-colors"
-                        >
-                            Privacy Policy
-                        </Link>
-                        <Link
-                            href="/terms"
-                            className="text-[11px] text-slate-muted/50 hover:text-slate-muted transition-colors"
-                        >
-                            Terms of Use
-                        </Link>
+                {/* Bottom Legal Row */}
+                <div className="mt-14 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
+                    <div className="font-mono-tech">
+                        © {new Date().getFullYear()} GSAssociates Construction Pvt. Ltd. All rights reserved.
+                    </div>
+                    <div className="flex items-center gap-6 font-mono-tech text-[11px]">
+                        <span>ISO 9001:2015</span>
+                        <span>ISO 14001:2015</span>
+                        <span>IRC:SP:84-2014</span>
                     </div>
                 </div>
             </div>

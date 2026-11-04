@@ -5,7 +5,13 @@ import * as THREE from "three";
 import { useScroll, useVelocity } from "framer-motion";
 
 /**
- * Cinematographic Waypoint Definition
+ * Cinematographic Multi-Angle Camera Waypoint Definition
+ * Camera sweeps and orbits around the 3D bridge in a dynamic flight path:
+ * 1. Low Ground Macro South-East (Excavation)
+ * 2. Mid-level West/North-West Orbit (Cast Concrete Pier & Flared Hammerhead Cap)
+ * 3. Deck Cantilever Axis Glide (Launching Box Girders & Warren Space Truss)
+ * 4. High Diamond Pylon Orbit (Tower Apex & 80 Stay-Cables Tensioning)
+ * 5. Grand 3/4 Aerial Panoramic Reveal (Full 640m Span, Streaming Traffic, Skyline)
  */
 interface CameraWaypoint {
     progress: number;
@@ -14,36 +20,43 @@ interface CameraWaypoint {
 }
 
 const CAMERA_WAYPOINTS: CameraWaypoint[] = [
-    // Stage 1: Macro Ground Close-Up (Excavation, Soil Strata, Auger & Rebar Cage)
+    // Waypoint 1 (p = 0.00): Low Ground South-East Macro Shot (Foundation Bedrock)
     {
         progress: 0.0,
-        pos: new THREE.Vector3(38, -6, 75),
-        target: new THREE.Vector3(0, -28, -60),
+        pos: new THREE.Vector3(44, -12, 68),
+        target: new THREE.Vector3(0, -32, -35),
     },
-    // Stage 2: Substructure Elevation (Rising Concrete Pier Columns & Flared Caps)
+    // Waypoint 2 (p = 0.24): Orbit Sweep to West/North-West (Cast Piers & Hammerhead Cap)
     {
-        progress: 0.28,
-        pos: new THREE.Vector3(82, 28, 135),
-        target: new THREE.Vector3(0, -4, -25),
+        progress: 0.24,
+        pos: new THREE.Vector3(-68, 22, 88),
+        target: new THREE.Vector3(0, 4, -15),
     },
-    // Stage 3: Deck Cantilever Launch (Balanced Cantilever Box Girders & Pylon Erection)
+    // Waypoint 3 (p = 0.50): Roadway Deck Longitudinal Axis Glide (Cantilever Truss Launch)
     {
-        progress: 0.62,
-        pos: new THREE.Vector3(155, 68, 230),
-        target: new THREE.Vector3(12, 22, 0),
+        progress: 0.50,
+        pos: new THREE.Vector3(92, 62, -88),
+        target: new THREE.Vector3(0, 24, 40),
     },
-    // Stage 4: Monumental Panoramic Vista (Full 640m Cable-Stayed Span, Traffic, Skyline)
+    // Waypoint 4 (p = 0.74): High Tower Orbit (Diamond Pylon Crown & Stay Cable Fan)
+    {
+        progress: 0.74,
+        pos: new THREE.Vector3(162, 98, 125),
+        target: new THREE.Vector3(0, 70, -15),
+    },
+    // Waypoint 5 (p = 1.00): Grand Monumental 3/4 Panoramic Vista (640m Span + Traffic + City)
     {
         progress: 1.0,
-        pos: new THREE.Vector3(255, 115, 365),
-        target: new THREE.Vector3(22, 24, 0),
+        pos: new THREE.Vector3(255, 126, 330),
+        target: new THREE.Vector3(15, 22, 0),
     },
 ];
 
 function interpolateCamera(
     p: number,
     targetPos: THREE.Vector3,
-    targetLook: THREE.Vector3
+    targetLook: THREE.Vector3,
+    isMobile: boolean
 ) {
     const clampedP = Math.max(0, Math.min(1, p));
 
@@ -59,15 +72,21 @@ function interpolateCamera(
     if (w1 === w2 || w2.progress === w1.progress) {
         targetPos.copy(w1.pos);
         targetLook.copy(w1.target);
-        return;
+    } else {
+        // Cubic Hermite smoothstep easing between waypoints
+        const linearT = (clampedP - w1.progress) / (w2.progress - w1.progress);
+        const smoothT = linearT * linearT * (3 - 2 * linearT);
+
+        targetPos.lerpVectors(w1.pos, w2.pos, smoothT);
+        targetLook.lerpVectors(w1.target, w2.target, smoothT);
     }
 
-    // Cubic Hermite smoothstep easing between waypoints
-    const linearT = (clampedP - w1.progress) / (w2.progress - w1.progress);
-    const smoothT = linearT * linearT * (3 - 2 * linearT);
-
-    targetPos.lerpVectors(w1.pos, w2.pos, smoothT);
-    targetLook.lerpVectors(w1.target, w2.target, smoothT);
+    // Mobile Distance Adjustment: Push camera slightly back in portrait so the span fits
+    if (isMobile) {
+        targetPos.x *= 1.15;
+        targetPos.z *= 1.18;
+        targetPos.y += 8;
+    }
 }
 
 export function ConstructionScroll3D() {
@@ -85,11 +104,13 @@ export function ConstructionScroll3D() {
             46,
             window.innerWidth / window.innerHeight,
             1,
-            2600
+            2800
         );
 
-        const currentCamPos = new THREE.Vector3().copy(CAMERA_WAYPOINTS[0].pos);
-        const currentCamLook = new THREE.Vector3().copy(CAMERA_WAYPOINTS[0].target);
+        const isMobileInit = window.innerWidth < 768;
+        const currentCamPos = new THREE.Vector3();
+        const currentCamLook = new THREE.Vector3();
+        interpolateCamera(0, currentCamPos, currentCamLook, isMobileInit);
         camera.position.copy(currentCamPos);
         camera.lookAt(currentCamLook);
 
@@ -105,7 +126,10 @@ export function ConstructionScroll3D() {
 
         // 2. Structural Root Group
         const structureGroup = new THREE.Group();
-        structureGroup.position.set(20, -25, 0);
+        structureGroup.position.set(isMobileInit ? 0 : 20, isMobileInit ? -18 : -25, 0);
+        if (isMobileInit) {
+            structureGroup.scale.set(0.68, 0.68, 0.68);
+        }
         scene.add(structureGroup);
 
         // Materials: Editorial light architectural palette
@@ -127,7 +151,7 @@ export function ConstructionScroll3D() {
         const lineMatFaint = new THREE.LineBasicMaterial({
             color: 0x94a3b8,
             transparent: true,
-            opacity: 0.24,
+            opacity: 0.22,
         });
 
         // Bridge Specifications
@@ -147,7 +171,7 @@ export function ConstructionScroll3D() {
 
         const strataPoints: THREE.Vector3[] = [];
         // Horizontal soil strata depth contour rings
-        [-20, -40, -60, -85].forEach((depthY, sIdx) => {
+        [-24, -45, -68, -92].forEach((depthY, sIdx) => {
             const strataRadius = 75 + sIdx * 8;
             const strataSteps = 32;
             for (let s = 0; s < strataSteps; s++) {
@@ -183,7 +207,7 @@ export function ConstructionScroll3D() {
             pileOffsets.forEach((po) => {
                 const bx = po.x;
                 const bz = pz + po.z;
-                const shaftRadius = 5.5;
+                const shaftRadius = 5.2;
 
                 // 4 Vertical Shaft guide casing walls
                 for (let a = 0; a < 4; a++) {
@@ -191,21 +215,21 @@ export function ConstructionScroll3D() {
                     const wallX = bx + Math.cos(angle) * shaftRadius;
                     const wallZ = bz + Math.sin(angle) * shaftRadius;
                     boreholePoints.push(
-                        new THREE.Vector3(wallX, -16, wallZ),
-                        new THREE.Vector3(wallX, -88, wallZ)
+                        new THREE.Vector3(wallX, -18, wallZ),
+                        new THREE.Vector3(wallX, -90, wallZ)
                     );
                 }
 
-                // Continuous Helical Auger Drill Flights
-                const augerTurns = 8;
-                const augerSteps = 48;
+                // Helical Auger Drill Flights (Stationary on idle, rotates only when scrolling down in excavation phase)
+                const augerTurns = 7;
+                const augerSteps = 42;
                 for (let stepIdx = 0; stepIdx < augerSteps; stepIdx++) {
                     const t1 = stepIdx / augerSteps;
                     const t2 = (stepIdx + 1) / augerSteps;
                     const a1 = t1 * Math.PI * 2 * augerTurns;
                     const a2 = t2 * Math.PI * 2 * augerTurns;
-                    const y1 = -16 - t1 * 72;
-                    const y2 = -16 - t2 * 72;
+                    const y1 = -18 - t1 * 68;
+                    const y2 = -18 - t2 * 68;
                     augerPoints.push(
                         new THREE.Vector3(bx + Math.cos(a1) * shaftRadius * 0.85, y1, bz + Math.sin(a1) * shaftRadius * 0.85),
                         new THREE.Vector3(bx + Math.cos(a2) * shaftRadius * 0.85, y2, bz + Math.sin(a2) * shaftRadius * 0.85)
@@ -227,18 +251,18 @@ export function ConstructionScroll3D() {
         excavationGroup.add(augerMesh);
 
         // =====================================================================
-        // PHASE 2: STEEL REBAR CAGES (VERTICAL RODS & HELICAL SPIRAL TIES)
+        // PHASE 2: STEEL REINFORCEMENT (R/F) CAGES (VERTICAL RODS & SPIRAL HOOPS)
+        // Note: Once concrete is poured, reinforcement is encased and hidden!
         // =====================================================================
         const rebarGroup = new THREE.Group();
         structureGroup.add(rebarGroup);
 
         const rebarPoints: THREE.Vector3[] = [];
         pylonZCoords.forEach((pz) => {
-            // Main Column Rebar Bundles (Dual columns per pier)
             [-halfWidth, halfWidth].forEach((colX) => {
-                const cageRadius = 7.0;
+                const cageRadius = 6.8;
                 const barCount = 12;
-                // Vertical rebar rods extending from foundation bedrock (-80) up to pier cap (18)
+                // Vertical high-tensile steel rods
                 for (let b = 0; b < barCount; b++) {
                     const theta = (b / barCount) * Math.PI * 2;
                     const rx = colX + Math.cos(theta) * cageRadius;
@@ -272,6 +296,7 @@ export function ConstructionScroll3D() {
 
         // =====================================================================
         // PHASE 3: CONCRETE PIER COLUMNS (CAST-IN-SITU OCTAGONAL SUBSTRUCTURE)
+        // As concrete rises, it encases the rebar cage!
         // =====================================================================
         const concretePierGroup = new THREE.Group();
         structureGroup.add(concretePierGroup);
@@ -287,7 +312,6 @@ export function ConstructionScroll3D() {
                 new THREE.Vector3(wCap, capY, pz - dCap), new THREE.Vector3(wCap, capY, pz + dCap),
                 new THREE.Vector3(wCap, capY, pz + dCap), new THREE.Vector3(-wCap, capY, pz + dCap),
                 new THREE.Vector3(-wCap, capY, pz + dCap), new THREE.Vector3(-wCap, capY, pz - dCap),
-                // Slab cross ties
                 new THREE.Vector3(-wCap, capY, pz - dCap), new THREE.Vector3(wCap, capY, pz + dCap),
                 new THREE.Vector3(wCap, capY, pz - dCap), new THREE.Vector3(-wCap, capY, pz + dCap)
             );
@@ -296,7 +320,6 @@ export function ConstructionScroll3D() {
             [-halfWidth, halfWidth].forEach((colX) => {
                 const octRadius = 8.5;
                 const octSteps = 8;
-                // Base & Top octagonal rings
                 for (let s = 0; s < octSteps; s++) {
                     const a1 = (s / octSteps) * Math.PI * 2;
                     const a2 = ((s + 1) / octSteps) * Math.PI * 2;
@@ -305,11 +328,8 @@ export function ConstructionScroll3D() {
                     const x2 = colX + Math.cos(a2) * octRadius;
                     const z2 = pz + Math.sin(a2) * octRadius;
 
-                    // Base ring
                     pierPoints.push(new THREE.Vector3(x1, -18, z1), new THREE.Vector3(x2, -18, z2));
-                    // Top ring
                     pierPoints.push(new THREE.Vector3(x1, 18, z1), new THREE.Vector3(x2, 18, z2));
-                    // Vertical formwork seam lines
                     pierPoints.push(new THREE.Vector3(x1, -18, z1), new THREE.Vector3(x1, 18, z1));
                 }
             });
@@ -341,25 +361,20 @@ export function ConstructionScroll3D() {
         const bearingPoints: THREE.Vector3[] = [];
 
         pylonZCoords.forEach((pz) => {
-            // Massive Flared Hammerhead Pier Cap
             const capBotY = 14;
             const capTopY = 19;
             const capHalfW = halfWidth + 14;
             const capDepth = 16;
 
-            // Trapezoidal Hammerhead contours
             capPoints.push(
-                // Bottom narrower face
                 new THREE.Vector3(-halfWidth, capBotY, pz - capDepth * 0.6),
                 new THREE.Vector3(halfWidth, capBotY, pz - capDepth * 0.6),
                 new THREE.Vector3(halfWidth, capBotY, pz + capDepth * 0.6),
                 new THREE.Vector3(-halfWidth, capBotY, pz + capDepth * 0.6),
-                // Top wider flared face
                 new THREE.Vector3(-capHalfW, capTopY, pz - capDepth),
                 new THREE.Vector3(capHalfW, capTopY, pz - capDepth),
                 new THREE.Vector3(capHalfW, capTopY, pz + capDepth),
                 new THREE.Vector3(-capHalfW, capTopY, pz + capDepth),
-                // Flared cantilever corner bevels
                 new THREE.Vector3(-halfWidth, capBotY, pz - capDepth * 0.6),
                 new THREE.Vector3(-capHalfW, capTopY, pz - capDepth),
                 new THREE.Vector3(halfWidth, capBotY, pz - capDepth * 0.6),
@@ -370,7 +385,7 @@ export function ConstructionScroll3D() {
                 new THREE.Vector3(-capHalfW, capTopY, pz + capDepth)
             );
 
-            // 4 High-Spec Elastomeric Neoprene Bearing Pads with locator pins
+            // 4 High-Spec Elastomeric Neoprene Bearing Pads
             [-halfWidth - 4, -halfWidth + 8, halfWidth - 8, halfWidth + 4].forEach((bx) => {
                 [-6, 6].forEach((bzOff) => {
                     const padY = capTopY + 0.5;
@@ -417,25 +432,21 @@ export function ConstructionScroll3D() {
 
         for (let i = 0; i <= segments; i++) {
             const z = startZ + i * step;
-            // Parabolic engineering camber arch
             const y = 19.5 + Math.sin((i / segments) * Math.PI) * 11;
 
             const pL = new THREE.Vector3(-halfWidth, y, z);
             const pR = new THREE.Vector3(halfWidth, y, z);
-            const pC = new THREE.Vector3(0, y + 1.2, z); // Crown median
+            const pC = new THREE.Vector3(0, y + 1.2, z);
             leftDeckPts.push(pL);
             rightDeckPts.push(pR);
             centerDeckPts.push(pC);
 
-            // Transverse deck ribs
             deckPoints.push(pL, pC, pC, pR);
 
-            // Crash Barrier Parapets
             const barL = new THREE.Vector3(-halfWidth, y + 3.2, z);
             const barR = new THREE.Vector3(halfWidth, y + 3.2, z);
             deckPoints.push(pL, barL, pR, barR);
 
-            // Lower Warren Space Truss Chords (Y - 14)
             const uL = new THREE.Vector3(-halfWidth + 7, y - 14, z);
             const uR = new THREE.Vector3(halfWidth - 7, y - 14, z);
             lowerTrussLeft.push(uL);
@@ -444,24 +455,19 @@ export function ConstructionScroll3D() {
             deckPoints.push(uL, uR);
             deckPoints.push(pL, uL, pR, uR);
 
-            // Longitudinal chords & Warren 3D X-Bracing
             if (i > 0) {
-                // Deck edges & Median line
                 deckPoints.push(leftDeckPts[i - 1], pL);
                 deckPoints.push(rightDeckPts[i - 1], pR);
                 deckPoints.push(centerDeckPts[i - 1], pC);
 
-                // Lower chords
                 deckPoints.push(lowerTrussLeft[i - 1], uL);
                 deckPoints.push(lowerTrussRight[i - 1], uR);
 
-                // 3D Space Truss Diagonal X-Braces
                 deckPoints.push(lowerTrussLeft[i - 1], pL);
                 deckPoints.push(lowerTrussRight[i - 1], pR);
                 deckPoints.push(leftDeckPts[i - 1], uL);
                 deckPoints.push(rightDeckPts[i - 1], uR);
 
-                // Bottom horizontal cross bracing
                 deckPoints.push(lowerTrussLeft[i - 1], uR);
                 deckPoints.push(lowerTrussRight[i - 1], uL);
             }
@@ -500,7 +506,6 @@ export function ConstructionScroll3D() {
         const towerTopY = 135;
 
         pylonZCoords.forEach((pz) => {
-            // Diamond geometry (tapering inwards to apex crown)
             const tLeftTop = new THREE.Vector3(-7, towerTopY, pz);
             const tRightTop = new THREE.Vector3(7, towerTopY, pz);
             const tLeftMid = new THREE.Vector3(-halfWidth * 0.75, 75, pz);
@@ -508,16 +513,14 @@ export function ConstructionScroll3D() {
             const tLeftBase = new THREE.Vector3(-halfWidth - 2, 19, pz);
             const tRightBase = new THREE.Vector3(halfWidth + 2, 19, pz);
 
-            // Column legs
             towerPoints.push(
                 tLeftBase, tLeftMid,
                 tLeftMid, tLeftTop,
                 tRightBase, tRightMid,
                 tRightMid, tRightTop,
-                tLeftTop, tRightTop // Apex crown crosshead
+                tLeftTop, tRightTop
             );
 
-            // 3 Intermediate Cross Girders with K-Bracing
             [42, 76, 106].forEach((yTier) => {
                 const ratio = (yTier - 19) / (towerTopY - 19);
                 const spanX = (halfWidth + 2) * (1 - ratio * 0.85);
@@ -527,7 +530,6 @@ export function ConstructionScroll3D() {
                 towerPoints.push(bL, bR, bL, bCenter, bR, bCenter);
             });
 
-            // Tension Stay Cables (20 cables per tower = 80 total)
             const cableCount = 12;
             for (let c = 1; c <= cableCount; c++) {
                 const mastAnchorY = towerTopY - c * 7.5;
@@ -563,7 +565,6 @@ export function ConstructionScroll3D() {
         // =====================================================================
         // PHASE 7: GLOWING ACTIVE TRAFFIC, CITY SKYLINE & GROUND DATUM GRID
         // =====================================================================
-        // Distant 3D Architectural City Framing
         const cityPoints: THREE.Vector3[] = [];
         for (let bx = -300; bx <= 300; bx += 55) {
             const bz = -230 - (Math.abs(bx) % 45);
@@ -581,7 +582,6 @@ export function ConstructionScroll3D() {
         );
         structureGroup.add(cityMesh);
 
-        // Ground Datum Coordinate Grid
         const gridHelper = new THREE.GridHelper(750, 36, 0x185fa5, 0xe2e8f0);
         gridHelper.position.set(0, -75, 0);
         if (Array.isArray(gridHelper.material)) {
@@ -595,7 +595,6 @@ export function ConstructionScroll3D() {
         }
         structureGroup.add(gridHelper);
 
-        // Animated 3D Traffic Pulses
         const trafficCount = 14;
         const trafficPositions = new Float32Array(trafficCount * 3);
         const trafficGeom = new THREE.BufferGeometry();
@@ -615,23 +614,50 @@ export function ConstructionScroll3D() {
             speed: i % 2 === 0 ? 0.0022 : -0.0025,
         }));
 
-        // 3. Mouse Parallax Tracking
+        // 3. Responsive FOV & Screen Scale Handler
+        let isMobile = window.innerWidth < 768;
+        const updateResponsive = () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const aspect = width / height;
+
+            isMobile = width < 768;
+
+            // Dynamically widen vertical FOV in portrait so the entire 640m bridge model fits without cutting off!
+            if (aspect < 0.65) {
+                camera.fov = 72; // Wide portrait
+            } else if (aspect < 1.0) {
+                camera.fov = 60; // Tablet / square
+            } else {
+                camera.fov = 46; // Desktop widescreen
+            }
+
+            camera.aspect = aspect;
+            camera.updateProjectionMatrix();
+
+            if (isMobile) {
+                structureGroup.scale.set(0.68, 0.68, 0.68);
+                structureGroup.position.set(0, -18, 0); // Centered on mobile
+            } else {
+                structureGroup.scale.set(1.0, 1.0, 1.0);
+                structureGroup.position.set(20, -25, 0);
+            }
+
+            renderer.setSize(width, height);
+        };
+
+        updateResponsive();
+        window.addEventListener("resize", updateResponsive);
+
+        // 4. Mouse Parallax Tracking
         const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
         const handleMouseMove = (e: MouseEvent) => {
-            mouse.targetX = (e.clientX / window.innerWidth - 0.5) * 40;
-            mouse.targetY = -(e.clientY / window.innerHeight - 0.5) * 30;
+            mouse.targetX = (e.clientX / window.innerWidth - 0.5) * 35;
+            mouse.targetY = -(e.clientY / window.innerHeight - 0.5) * 25;
         };
         window.addEventListener("mousemove", handleMouseMove, { passive: true });
 
-        // 4. Resize Handler
-        const handleResize = () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        };
-        window.addEventListener("resize", handleResize);
-
-        // 5. Cinematic Render Loop with Camera Director Path
+        // 5. Cinematic Render Loop with Dynamic Camera Orbit & Stage Assembly
         let animId: number;
         let lastTime = performance.now();
         let smoothedVelocity = 0;
@@ -642,87 +668,98 @@ export function ConstructionScroll3D() {
             const dt = (time - lastTime) * 0.001;
             lastTime = time;
 
-            // Smooth mouse parallax
             mouse.x += (mouse.targetX - mouse.x) * 0.06;
             mouse.y += (mouse.targetY - mouse.y) * 0.06;
 
-            // Scroll position & velocity
             const scrollP = scrollYProgress.get();
             const currentVelocity = scrollVelocity.get();
             smoothedVelocity += (currentVelocity - smoothedVelocity) * 0.1;
 
             // =================================================================
-            // CINEMATIC CAMERA DIRECTOR CHOREOGRAPHY
-            // Interpolates from macro close-up at foundation to grand panoramic vista
+            // CINEMATIC CAMERA DIRECTOR PATH (ORBITING & MOVING AROUND)
             // =================================================================
-            interpolateCamera(scrollP, targetPos, targetLook);
+            interpolateCamera(scrollP, targetPos, targetLook, isMobile);
 
-            // Apply smooth camera motion with parallax
-            camera.position.x = targetPos.x + mouse.x * (0.4 + scrollP * 0.6);
-            camera.position.y = targetPos.y + mouse.y * (0.4 + scrollP * 0.6);
+            camera.position.x = targetPos.x + mouse.x * (0.3 + scrollP * 0.5);
+            camera.position.y = targetPos.y + mouse.y * (0.3 + scrollP * 0.5);
             camera.position.z = targetPos.z;
-
-            // LookAt tracking target + slight mouse influence
             camera.lookAt(targetLook.x, targetLook.y, targetLook.z);
 
             // Subtle roll banking driven by scroll velocity
             camera.rotation.z = Math.max(-0.05, Math.min(0.05, smoothedVelocity * 0.000035));
 
             // =================================================================
-            // PROGRESSIVE CONSTRUCTION ASSEMBLY STAGING
+            // CIVIL ENGINEERING CONSTRUCTION STAGING
             // =================================================================
-            // 1. Excavation & Soil Strata: Visible from start, fades out slightly in wide vista
+            // 1. Excavation & Soil Strata:
+            // The auger drill ONLY moves when actively scrolling in excavation stage (scrollP <= 0.12).
+            // It does NOT continuously spin on idle!
+            if (scrollP <= 0.12) {
+                augerMesh.visible = true;
+                // Rotation proportional to scroll position / scroll velocity (no endless loop!)
+                augerMesh.rotation.y = scrollP * 35 + smoothedVelocity * 0.0008;
+                augerMesh.position.y = -scrollP * 15;
+            } else {
+                // Auger drill is retracted and hidden once excavation finishes!
+                augerMesh.visible = false;
+            }
             excavationGroup.visible = true;
-            if (scrollP < 0.25) {
-                // Auger drill rotating and descending
-                augerMesh.rotation.y = time * 0.003;
-                augerMesh.position.y = Math.sin(time * 0.002) * 3;
-            }
 
-            // 2. Rebar Cages: Enter as excavation completes (p > 0.04)
-            rebarGroup.visible = scrollP > 0.04;
-            if (scrollP > 0.04 && scrollP <= 0.28) {
-                // Rebar cages lowering and assembling
-                const rebarProgress = (scrollP - 0.04) / 0.24;
+            // 2. Steel Reinforcement (R/F) Cages:
+            // R/F is placed in shafts and visible during reinforcement phase (0.03 <= scrollP <= 0.24).
+            // CRITICAL CIVIL RULE: As concrete is poured, r/f is encased inside and NO LONGER visible!
+            if (scrollP >= 0.03 && scrollP <= 0.24) {
+                rebarGroup.visible = true;
+                const rebarProgress = (scrollP - 0.03) / 0.16;
                 rebarGroup.scale.y = Math.min(1, Math.max(0.1, rebarProgress));
-            } else if (scrollP > 0.28) {
-                rebarGroup.scale.y = 1;
+                // Fade out rebar as concrete rises around it
+                if (scrollP > 0.16) {
+                    const fade = 1 - (scrollP - 0.16) / 0.08;
+                    lineMatGold.opacity = 0.72 * Math.max(0, fade);
+                } else {
+                    lineMatGold.opacity = 0.72;
+                }
+            } else {
+                // Completely hidden once concrete pier column is cast!
+                rebarGroup.visible = false;
+                lineMatGold.opacity = 0.72; // Restore for traffic/bearings
             }
 
-            // 3. Concrete Piers: Cast upwards (p > 0.12)
+            // 3. Concrete Pier Columns (Cast-In-Situ):
+            // Rise upward from Y = -18 to Y = 18, permanently encasing the rebar
             concretePierGroup.visible = scrollP > 0.12;
-            if (scrollP > 0.12 && scrollP <= 0.38) {
-                const pierProgress = (scrollP - 0.12) / 0.26;
+            if (scrollP > 0.12 && scrollP <= 0.36) {
+                const pierProgress = (scrollP - 0.12) / 0.24;
                 concretePierGroup.scale.y = Math.min(1, Math.max(0.08, pierProgress));
-            } else if (scrollP > 0.38) {
+            } else if (scrollP > 0.36) {
                 concretePierGroup.scale.y = 1;
             }
 
-            // 4. Pier Caps & Bearing Pads: Locked onto piers (p > 0.24)
-            pierCapGroup.visible = scrollP > 0.24;
+            // 4. Flared Hammerhead Pier Caps & Bearing Pads: Locked onto piers (p > 0.22)
+            pierCapGroup.visible = scrollP > 0.22;
 
-            // 5. Continuous Deck & Warren Space Truss: Cantilever launch (p > 0.32)
-            deckGroup.visible = scrollP > 0.32;
-            if (scrollP > 0.32 && scrollP <= 0.65) {
-                const deckProgress = (scrollP - 0.32) / 0.33;
+            // 5. Continuous Deck & Warren Space Truss: Balanced Cantilever launch (p > 0.30)
+            deckGroup.visible = scrollP > 0.30;
+            if (scrollP > 0.30 && scrollP <= 0.64) {
+                const deckProgress = (scrollP - 0.30) / 0.34;
                 deckGroup.scale.z = Math.min(1, Math.max(0.15, deckProgress));
-            } else if (scrollP > 0.65) {
+            } else if (scrollP > 0.64) {
                 deckGroup.scale.z = 1;
             }
 
-            // 6. Diamond Pylons & Stay Cables: Erection & tensioning (p > 0.46)
-            towerGroup.visible = scrollP > 0.46;
-            if (scrollP > 0.46 && scrollP <= 0.78) {
-                const towerProgress = (scrollP - 0.46) / 0.32;
+            // 6. Diamond Pylons & Stay Cables: Erection & tensioning (p > 0.44)
+            towerGroup.visible = scrollP > 0.44;
+            if (scrollP > 0.44 && scrollP <= 0.78) {
+                const towerProgress = (scrollP - 0.44) / 0.34;
                 towerMesh.scale.y = Math.min(1, Math.max(0.08, towerProgress));
-                cableMesh.scale.y = Math.min(1, Math.max(0.04, Math.max(0, (scrollP - 0.56) / 0.22)));
+                cableMesh.scale.y = Math.min(1, Math.max(0.04, Math.max(0, (scrollP - 0.54) / 0.24)));
             } else if (scrollP > 0.78) {
                 towerMesh.scale.y = 1;
                 cableMesh.scale.y = 1;
             }
 
-            // 7. Active Glowing Traffic: Lights up once deck is continuous (p > 0.65)
-            trafficMesh.visible = scrollP > 0.65;
+            // 7. Active Glowing Traffic: Lights up once deck is continuous (p > 0.64)
+            trafficMesh.visible = scrollP > 0.64;
             if (trafficMesh.visible) {
                 const posAttr = trafficGeom.attributes.position as THREE.BufferAttribute;
                 const speedMultiplier = 1 + Math.min(3, Math.abs(smoothedVelocity) * 0.002);
@@ -742,9 +779,6 @@ export function ConstructionScroll3D() {
                 posAttr.needsUpdate = true;
             }
 
-            // Subtle idle structure yaw drift
-            structureGroup.rotation.y = Math.sin(time * 0.00025) * 0.04;
-
             renderer.render(scene, camera);
             animId = requestAnimationFrame(animate);
         };
@@ -753,8 +787,8 @@ export function ConstructionScroll3D() {
 
         return () => {
             cancelAnimationFrame(animId);
+            window.removeEventListener("resize", updateResponsive);
             window.removeEventListener("mousemove", handleMouseMove);
-            window.removeEventListener("resize", handleResize);
             if (container.contains(renderer.domElement)) {
                 container.removeChild(renderer.domElement);
             }

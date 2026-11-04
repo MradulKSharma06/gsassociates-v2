@@ -68,7 +68,7 @@ export default function RootLayout({
           <ConstructionScroll3D />
           <ScrollProgressBar />
           <Navbar />
-          <main className="pt-28 sm:pt-32 min-h-screen relative">{children}</main>
+          <main className="pt-20 sm:pt-24 min-h-screen relative">{children}</main>
           <Footer />
         </SmoothScrollProvider>
       </body>

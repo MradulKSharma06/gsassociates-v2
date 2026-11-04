@@ -122,7 +122,7 @@ export function HeroCarousel() {
                 </motion.div>
             </div>
 
-            {/* 6. Prominent Kinetic Scroll Cue (Directly Guiding The User) */}
+            {/* 6. Kinetic Scroll Cue */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -135,7 +135,7 @@ export function HeroCarousel() {
             >
                 <span className="inline-flex items-center gap-1.5 font-semibold text-[#185FA5] hover:text-[#0d1b2e] transition-colors">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#185FA5] animate-ping" />
-                    <span>Scroll To Witness 3D Bridge Construction</span>
+                    <span>Scroll</span>
                 </span>
                 <motion.div
                     animate={{ y: [0, 4, 0] }}

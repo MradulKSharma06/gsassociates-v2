@@ -4,6 +4,7 @@ import { CtaBanner } from "@/components/home/CtaBanner";
 import { team } from "@/data/stats";
 import { CheckCircle2, Award, Shield, Users } from "lucide-react";
 import { MilestonesTimeline } from "@/components/about/MilestonesTimeline";
+import { VisionMissionCards } from "@/components/about/VisionMissionCards";
 
 export const metadata: Metadata = {
     title: "About Us",
@@ -63,47 +64,10 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            {/* Vision & Mission */}
+            {/* Vision & Mission — Revamped with High-Precision Architectural Cards */}
             <section className="section-padding bg-white border-b border-slate-200/80">
                 <div className="container-site">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {[
-                            {
-                                label: "Our Institutional Vision",
-                                heading: "To be Tamil Nadu's premier infrastructure builder",
-                                body: "We envision a Tamil Nadu where every citizen has access to world-class roads, reliable bridges, and dignified public buildings — built with integrity, built to endure.",
-                                accentColor: "#185FA5",
-                            },
-                            {
-                                label: "Our Core Mission",
-                                heading: "Deliver government infrastructure with precision and pride",
-                                body: "Our mission is to execute every public works contract with the highest standards of quality, safety, and timeliness — serving the Government of Tamil Nadu and its citizens with unwavering commitment.",
-                                accentColor: "#c88a22",
-                            },
-                        ].map((item) => (
-                            <div
-                                key={item.label}
-                                className="rounded-2xl p-8 border border-slate-200 bg-[#FAF9F6] shadow-matte-sm"
-                                style={{ borderLeft: `4px solid ${item.accentColor}` }}
-                            >
-                                <div
-                                    className="text-[10px] font-mono-tech font-bold tracking-widest uppercase mb-3"
-                                    style={{ color: item.accentColor }}
-                                >
-                                    {item.label}
-                                </div>
-                                <h2
-                                    style={{ fontFamily: "var(--font-condensed)" }}
-                                    className="text-2xl sm:text-3xl font-extrabold text-[#0d1b2e] uppercase leading-tight mb-3"
-                                >
-                                    {item.heading}
-                                </h2>
-                                <p className="text-sm text-slate-600 leading-relaxed">
-                                    {item.body}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
+                    <VisionMissionCards />
                 </div>
             </section>
 

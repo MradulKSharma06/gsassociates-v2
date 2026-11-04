@@ -5,7 +5,6 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollProgressBar } from "@/components/ui/ScrollProgressBar";
 import { SmoothScrollProvider } from "@/components/ui/SmoothScrollProvider";
-import { ConstructionScroll3D } from "@/components/ui/ConstructionScroll3D";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -65,7 +64,6 @@ export default function RootLayout({
     >
       <body className="antialiased bg-[#FAF9F6] text-[#374151]">
         <SmoothScrollProvider>
-          <ConstructionScroll3D />
           <ScrollProgressBar />
           <Navbar />
           <main className="pt-20 sm:pt-24 min-h-screen relative">{children}</main>

@@ -139,17 +139,22 @@ export function ProjectsClient({ initialProjects }: Props) {
                     )}
                 </div>
 
-                {/* Animated Grid */}
+                {/* Animated Grid with Scroll Trigger & Stagger */}
                 <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <AnimatePresence>
-                        {filtered.map((project) => (
+                        {filtered.map((project, idx) => (
                             <motion.div
                                 key={project.id}
                                 layout
-                                initial={{ opacity: 0, scale: 0.96 }}
-                                animate={{ opacity: 1, scale: 1 }}
+                                initial={{ opacity: 0, y: 30, scale: 0.97 }}
+                                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                                viewport={{ once: true, margin: "-40px" }}
                                 exit={{ opacity: 0, scale: 0.96 }}
-                                transition={{ duration: 0.22 }}
+                                transition={{
+                                    duration: 0.5,
+                                    ease: [0.16, 1, 0.3, 1],
+                                    delay: (idx % 3) * 0.08,
+                                }}
                                 className="h-full"
                             >
                                 <Tilt3DCard maxTilt={5} className="h-full">

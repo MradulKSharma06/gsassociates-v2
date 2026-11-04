@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { CtaBanner } from "@/components/home/CtaBanner";
-import { team, milestones } from "@/data/stats";
+import { team } from "@/data/stats";
 import { CheckCircle2, Award, Shield, Users } from "lucide-react";
+import { MilestonesTimeline } from "@/components/about/MilestonesTimeline";
 
 export const metadata: Metadata = {
     title: "About Us",
@@ -46,7 +47,7 @@ export default function AboutPage() {
     return (
         <>
             {/* Architectural Page Hero */}
-            <section className="relative overflow-hidden section-padding-sm bg-[#FAF9F6] border-b border-slate-200/80 blueprint-grid">
+            <section className="relative overflow-hidden pt-6 pb-12 sm:pt-10 sm:pb-16 bg-[#FAF9F6] border-b border-slate-200/80 blueprint-grid">
                 <div className="container-site relative z-10">
                     <SectionLabel>Institutional Profile</SectionLabel>
                     <h1
@@ -140,7 +141,7 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            {/* Timeline / Milestones */}
+            {/* Animated 10 Years of Milestones (Responsive Scroll Progression) */}
             <section id="milestones" className="section-padding bg-white border-b border-slate-200/80">
                 <div className="container-site">
                     <div className="mb-12">
@@ -148,45 +149,12 @@ export default function AboutPage() {
                         <h2 className="section-heading">
                             10 Years of <span>Milestones</span>
                         </h2>
+                        <p className="section-subheading mt-3">
+                            A decade of sustained execution, statutory empanelments, and landmark engineering delivery across Tamil Nadu.
+                        </p>
                     </div>
 
-                    <div className="relative">
-                        <div className="absolute left-[27px] top-0 bottom-0 w-[1px] bg-slate-200 lg:left-1/2" />
-
-                        <div className="flex flex-col gap-8">
-                            {milestones.map((m, i) => (
-                                <div
-                                    key={m.year}
-                                    className={`flex gap-6 relative ${
-                                        i % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
-                                    }`}
-                                >
-                                    <div className="absolute left-[20px] w-4 h-4 rounded-full border-2 border-white bg-[#185FA5] shadow-[0_0_0_3px_#dbeafe] z-10 lg:left-1/2 lg:-translate-x-1/2" />
-
-                                    <div className="ml-12 lg:ml-0 lg:w-[calc(50%-2rem)]">
-                                        <div
-                                            className={`p-6 rounded-2xl border border-slate-200 bg-[#FAF9F6] shadow-matte-sm ${
-                                                i % 2 === 0 ? "lg:mr-8" : "lg:ml-8"
-                                            }`}
-                                        >
-                                            <div className="text-[11px] font-mono-tech font-bold uppercase text-[#185FA5] mb-1">
-                                                {m.year}
-                                            </div>
-                                            <h3
-                                                style={{ fontFamily: "var(--font-condensed)" }}
-                                                className="text-xl font-bold text-[#0d1b2e] uppercase mb-1"
-                                            >
-                                                {m.title}
-                                            </h3>
-                                            <p className="text-xs text-slate-600 leading-relaxed">
-                                                {m.desc}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    <MilestonesTimeline />
                 </div>
             </section>
 

@@ -5,24 +5,23 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollProgressBar } from "@/components/ui/ScrollProgressBar";
 import { SmoothScrollProvider } from "@/components/ui/SmoothScrollProvider";
+import { ConstructionScrollEngine } from "@/components/ui/ConstructionScrollEngine";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
   variable: "--font-sans",
   display: "swap",
 });
 
 const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
-  weight: ["600", "700", "800", "900"],
+  weight: "700",
   variable: "--font-barlow-condensed",
   display: "swap",
 });
 
 const mono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
   variable: "--font-mono",
   display: "swap",
 });
@@ -66,9 +65,10 @@ export default function RootLayout({
     >
       <body className="antialiased bg-[#FAF9F6] text-[#374151]">
         <SmoothScrollProvider>
+          <ConstructionScrollEngine />
           <ScrollProgressBar />
           <Navbar />
-          <main className="pt-24">{children}</main>
+          <main className="pt-28 sm:pt-32 min-h-screen relative">{children}</main>
           <Footer />
         </SmoothScrollProvider>
       </body>

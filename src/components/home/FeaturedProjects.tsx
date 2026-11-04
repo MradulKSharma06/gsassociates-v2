@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/Badge";
 import { projects } from "@/data/projects";
 import { ArrowRight, MapPin, Building2, CheckCircle2, ArrowUpRight } from "lucide-react";
 import { MotionWrapper } from "@/components/ui/MotionWrapper";
+import { Tilt3DCard } from "@/components/ui/Tilt3DCard";
 
 const featured = projects.filter((p) => p.featured).slice(0, 3);
 const flagship = featured[0];
@@ -46,10 +47,11 @@ export function FeaturedProjects() {
                     {/* Flagship Card (Spans 7 Columns) */}
                     {flagship && (
                         <MotionWrapper direction="up" delay={0.08} className="lg:col-span-7">
-                            <Link
-                                href={`/projects/${flagship.slug}`}
-                                className="group flex flex-col h-full rounded-2xl bg-white border border-slate-200/90 shadow-matte-sm hover:shadow-matte-lg hover:border-slate-300 transition-all duration-300 overflow-hidden"
-                            >
+                            <Tilt3DCard maxTilt={5} className="h-full">
+                                <Link
+                                    href={`/projects/${flagship.slug}`}
+                                    className="group flex flex-col h-full rounded-2xl bg-white border border-slate-200/90 shadow-matte-sm hover:shadow-matte-lg hover:border-slate-300 transition-all duration-300 overflow-hidden"
+                                >
                                 {/* Top Technical CAD Blueprint Header */}
                                 <div className="p-7 sm:p-9 bg-[#F4F5F7] border-b border-slate-200/80 relative overflow-hidden">
                                     {/* Blueprint CAD Fine Grid */}
@@ -146,7 +148,8 @@ export function FeaturedProjects() {
                                     </div>
                                 </div>
                             </Link>
-                        </MotionWrapper>
+                        </Tilt3DCard>
+                    </MotionWrapper>
                     )}
 
                     {/* Secondary 2 Cards (Spans 5 Columns in Stack) */}
@@ -158,10 +161,11 @@ export function FeaturedProjects() {
                                 delay={0.12 + idx * 0.08}
                                 className="flex-1"
                             >
-                                <Link
-                                    href={`/projects/${project.slug}`}
-                                    className="group flex flex-col justify-between h-full p-6 sm:p-7 rounded-2xl bg-white border border-slate-200/90 shadow-matte-sm hover:shadow-matte-lg hover:border-slate-300 transition-all duration-300"
-                                >
+                                <Tilt3DCard maxTilt={5} className="h-full">
+                                    <Link
+                                        href={`/projects/${project.slug}`}
+                                        className="group flex flex-col justify-between h-full p-6 sm:p-7 rounded-2xl bg-white border border-slate-200/90 shadow-matte-sm hover:shadow-matte-lg hover:border-slate-300 transition-all duration-300"
+                                    >
                                     <div>
                                         <div className="flex items-center justify-between mb-4">
                                             <Badge variant="blue">{project.category}</Badge>
@@ -196,7 +200,8 @@ export function FeaturedProjects() {
                                         </span>
                                     </div>
                                 </Link>
-                            </MotionWrapper>
+                            </Tilt3DCard>
+                        </MotionWrapper>
                         ))}
                     </div>
                 </div>

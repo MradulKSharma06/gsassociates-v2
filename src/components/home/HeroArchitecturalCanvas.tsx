@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Layers, Compass, Maximize2, RotateCcw } from "lucide-react";
+import { Layers, RotateCcw, Play, Pause, Compass } from "lucide-react";
 
 type ModelType = "bridge" | "civic";
 
@@ -10,175 +10,342 @@ interface Point3D {
     y: number;
     z: number;
     isParticle?: boolean;
+    color?: string;
+    size?: number;
+}
+
+interface TrafficParticle {
+    t: number;      // 0 to 1 along bridge
+    lane: number;   // -1 or 1 (eastbound / westbound)
+    speed: number;
+    color: string;
 }
 
 export function HeroArchitecturalCanvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [model, setModel] = useState<ModelType>("bridge");
-    const [isInteracting, setIsInteracting] = useState(false);
+    const [isAutoSpin, setIsAutoSpin] = useState(true);
 
-    // Rotation state
+    // Rotation & interaction state
     const rotRef = useRef({
-        x: 0.38,
-        y: -0.55,
-        targetX: 0.38,
-        targetY: -0.55,
+        x: 0.32,
+        y: -0.65,
+        targetX: 0.32,
+        targetY: -0.65,
         isDragging: false,
         lastX: 0,
         lastY: 0,
+        vx: 0,
+        vy: 0,
     });
 
-    // Generate Model 1: Elevated Expressway Bridge Truss
+    // Traffic simulation
+    const trafficRef = useRef<TrafficParticle[]>([
+        { t: 0.1, lane: -1, speed: 0.0022, color: "#185FA5" },
+        { t: 0.28, lane: -1, speed: 0.0018, color: "#c88a22" },
+        { t: 0.62, lane: -1, speed: 0.0026, color: "#0d1b2e" },
+        { t: 0.85, lane: -1, speed: 0.0020, color: "#185FA5" },
+        { t: 0.15, lane: 1, speed: -0.0024, color: "#0d1b2e" },
+        { t: 0.45, lane: 1, speed: -0.0019, color: "#c88a22" },
+        { t: 0.72, lane: 1, speed: -0.0028, color: "#185FA5" },
+        { t: 0.92, lane: 1, speed: -0.0021, color: "#0d1b2e" },
+    ]);
+
+    // =========================================================================
+    // MODEL 1: HIGH-FIDELITY CABLE-STAYED EXPRESSWAY BRIDGE
+    // =========================================================================
     const generateBridgeGeometry = useCallback(() => {
         const points: Point3D[] = [];
-        const lines: [number, number][] = [];
+        const lines: [number, number, string?][] = [];
 
-        const spans = 9;
-        const width = 65;
+        const totalLength = 540;
+        const deckWidth = 64;
+        const halfWidth = deckWidth / 2;
+        const numSegments = 36;
+        const segStep = totalLength / numSegments;
+        const startZ = -totalLength / 2;
 
-        for (let s = 0; s <= spans; s++) {
-            const z = (s - spans / 2) * 44;
-            const y = -12 + Math.sin(s * 0.35) * 10;
-            const x1 = -width / 2;
-            const x2 = width / 2;
+        const leftDeckIndices: number[] = [];
+        const rightDeckIndices: number[] = [];
+        const centerDeckIndices: number[] = [];
+        const underTrussLeft: number[] = [];
+        const underTrussRight: number[] = [];
 
-            const idx1 = points.length;
-            points.push({ x: x1, y, z });
-            const idx2 = points.length;
-            points.push({ x: x2, y, z });
+        // 1. Deck Girders, Roadway Lanes & Lower Warren Truss Chords
+        for (let i = 0; i <= numSegments; i++) {
+            const z = startZ + i * segStep;
+            // Parabolic elevation camber
+            const y = -8 - Math.sin((i / numSegments) * Math.PI) * 16;
 
-            // Cross deck beam
-            lines.push([idx1, idx2]);
+            // Deck left & right edges
+            const iL = points.length;
+            points.push({ x: -halfWidth, y, z, color: "#0d1b2e", size: 1.5 });
+            leftDeckIndices.push(iL);
 
-            // Top truss chords
-            const t1 = points.length;
-            points.push({ x: x1, y: y - 24, z });
-            const t2 = points.length;
-            points.push({ x: x2, y: y - 24, z });
-            lines.push([t1, t2]);
-            lines.push([idx1, t1]);
-            lines.push([idx2, t2]);
+            const iR = points.length;
+            points.push({ x: halfWidth, y, z, color: "#0d1b2e", size: 1.5 });
+            rightDeckIndices.push(iR);
 
-            // Foundation piers
-            if (s % 2 === 0) {
-                const p1 = points.length;
-                points.push({ x: x1 + 12, y: 75, z });
-                const p2 = points.length;
-                points.push({ x: x2 - 12, y: 75, z });
-                lines.push([idx1, p1]);
-                lines.push([idx2, p2]);
-                lines.push([p1, p2]);
-            }
+            // Centerline median barrier
+            const iC = points.length;
+            points.push({ x: 0, y, z, color: "#94a3b8", size: 1.0 });
+            centerDeckIndices.push(iC);
 
-            // Longitudinal chords & diagonal cross-braces
-            if (s > 0) {
-                lines.push([idx1 - 4, idx1]);
-                lines.push([idx2 - 4, idx2]);
-                lines.push([t1 - 4, t1]);
-                lines.push([t2 - 4, t2]);
-                // Diagonal cross-brace
-                lines.push([idx1 - 4, t1]);
-                lines.push([idx2 - 4, t2]);
-            }
-        }
+            // Transverse deck cross-beam
+            lines.push([iL, iC, "rgba(13,27,46,0.3)"]);
+            lines.push([iC, iR, "rgba(13,27,46,0.3)"]);
 
-        // Survey point-cloud scatter
-        for (let i = 0; i < 180; i++) {
-            points.push({
-                x: (Math.random() - 0.5) * 260,
-                y: (Math.random() - 0.5) * 140 + 20,
-                z: (Math.random() - 0.5) * 360,
-                isParticle: true,
-            });
-        }
+            // Under-deck Warren truss bottom chords (y + 18)
+            const uL = points.length;
+            points.push({ x: -halfWidth + 6, y: y + 16, z, color: "#185FA5", size: 1.2 });
+            underTrussLeft.push(uL);
 
-        return { points, lines };
-    }, []);
+            const uR = points.length;
+            points.push({ x: halfWidth - 6, y: y + 16, z, color: "#185FA5", size: 1.2 });
+            underTrussRight.push(uR);
 
-    // Generate Model 2: Civic Headquarters Complex (Architecture & High-Rise Structures)
-    const generateCivicGeometry = useCallback(() => {
-        const points: Point3D[] = [];
-        const lines: [number, number][] = [];
+            lines.push([uL, uR, "rgba(24,95,165,0.25)"]);
+            lines.push([iL, uL, "rgba(24,95,165,0.3)"]);
+            lines.push([iR, uR, "rgba(24,95,165,0.3)"]);
 
-        // Building A: Central 5-Tier Tower
-        const tiers = 5;
-        const towerWidth = 70;
-        const tierHeight = 26;
+            // Longitudinal chords & diagonal cross bracing
+            if (i > 0) {
+                // Deck edges
+                lines.push([leftDeckIndices[i - 1], iL, "rgba(13,27,46,0.7)"]);
+                lines.push([rightDeckIndices[i - 1], iR, "rgba(13,27,46,0.7)"]);
+                lines.push([centerDeckIndices[i - 1], iC, "rgba(200,138,34,0.5)"]);
 
-        for (let t = 0; t <= tiers; t++) {
-            const y = 60 - t * tierHeight;
-            const inset = t * 4;
-            const w = towerWidth - inset;
-            const d = 60 - inset;
+                // Lower truss chords
+                lines.push([underTrussLeft[i - 1], uL, "rgba(24,95,165,0.6)"]);
+                lines.push([underTrussRight[i - 1], uR, "rgba(24,95,165,0.6)"]);
 
-            const c1 = points.length;
-            points.push({ x: -w / 2, y, z: -d / 2 });
-            const c2 = points.length;
-            points.push({ x: w / 2, y, z: -d / 2 });
-            const c3 = points.length;
-            points.push({ x: w / 2, y, z: d / 2 });
-            const c4 = points.length;
-            points.push({ x: -w / 2, y, z: d / 2 });
-
-            // Slab perimeter
-            lines.push([c1, c2]);
-            lines.push([c2, c3]);
-            lines.push([c3, c4]);
-            lines.push([c4, c1]);
-
-            // Vertical structural columns
-            if (t > 0) {
-                lines.push([c1 - 4, c1]);
-                lines.push([c2 - 4, c2]);
-                lines.push([c3 - 4, c3]);
-                lines.push([c4 - 4, c4]);
+                // Warren truss alternating diagonals
+                lines.push([underTrussLeft[i - 1], iL, "rgba(24,95,165,0.35)"]);
+                lines.push([underTrussRight[i - 1], iR, "rgba(24,95,165,0.35)"]);
             }
         }
 
-        // Building B & C: Lateral Annexes (Wings)
-        const wingW = 40;
-        const wingH = 45;
-        [-65, 65].forEach((offset) => {
-            const baseY = 60;
-            const topY = 60 - wingH;
-            const b1 = points.length;
-            points.push({ x: offset - wingW / 2, y: baseY, z: -25 });
-            const b2 = points.length;
-            points.push({ x: offset + wingW / 2, y: baseY, z: -25 });
-            const b3 = points.length;
-            points.push({ x: offset + wingW / 2, y: baseY, z: 25 });
-            const b4 = points.length;
-            points.push({ x: offset - wingW / 2, y: baseY, z: 25 });
+        // 2. Twin Soaring Diamond Pylon Masts (Towers at 1/3 and 2/3 of bridge)
+        const pylonZCoords = [-totalLength / 6, totalLength / 6];
+        const pylonPeakIndices: { left: number; right: number }[] = [];
 
-            const u1 = points.length;
-            points.push({ x: offset - wingW / 2, y: topY, z: -25 });
-            const u2 = points.length;
-            points.push({ x: offset + wingW / 2, y: topY, z: -25 });
-            const u3 = points.length;
-            points.push({ x: offset + wingW / 2, y: topY, z: 25 });
-            const u4 = points.length;
-            points.push({ x: offset - wingW / 2, y: topY, z: 25 });
+        pylonZCoords.forEach((pz) => {
+            const baseY = 80;    // Deep subterranean pier footing
+            const deckY = -22;   // Road level
+            const mastTopY = -140; // Tower height
 
-            // Base and roof
-            lines.push([b1, b2], [b2, b3], [b3, b4], [b4, b1]);
-            lines.push([u1, u2], [u2, u3], [u3, u4], [u4, u1]);
-            // Columns
-            lines.push([b1, u1], [b2, u2], [b3, u3], [b4, u4]);
+            // Subterranean pile cap & river piers
+            const pCapL = points.length;
+            points.push({ x: -halfWidth - 10, y: baseY, z: pz, color: "#0d1b2e", size: 2.5 });
+            const pCapR = points.length;
+            points.push({ x: halfWidth + 10, y: baseY, z: pz, color: "#0d1b2e", size: 2.5 });
+            lines.push([pCapL, pCapR, "rgba(13,27,46,0.8)"]);
+
+            // Pier shafts to deck level
+            const pDeckL = points.length;
+            points.push({ x: -halfWidth - 4, y: deckY, z: pz, color: "#0d1b2e", size: 2 });
+            const pDeckR = points.length;
+            points.push({ x: halfWidth + 4, y: deckY, z: pz, color: "#0d1b2e", size: 2 });
+            lines.push([pCapL, pDeckL, "rgba(13,27,46,0.85)"]);
+            lines.push([pCapR, pDeckR, "rgba(13,27,46,0.85)"]);
+
+            // Upper Diamond Pylon Masts (inclined inwards to peak)
+            const pTopL = points.length;
+            points.push({ x: -8, y: mastTopY, z: pz, color: "#185FA5", size: 3 });
+            const pTopR = points.length;
+            points.push({ x: 8, y: mastTopY, z: pz, color: "#185FA5", size: 3 });
+
+            lines.push([pDeckL, pTopL, "rgba(13,27,46,0.9)"]);
+            lines.push([pDeckR, pTopR, "rgba(13,27,46,0.9)"]);
+            lines.push([pTopL, pTopR, "rgba(200,138,34,0.9)"]); // Tower top cross-beam
+
+            // Upper intermediate cross-strut
+            const strutY = (deckY + mastTopY) * 0.45;
+            const sL = points.length;
+            points.push({ x: -halfWidth * 0.35, y: strutY, z: pz, size: 1.5 });
+            const sR = points.length;
+            points.push({ x: halfWidth * 0.35, y: strutY, z: pz, size: 1.5 });
+            lines.push([sL, sR, "rgba(13,27,46,0.7)"]);
+
+            pylonPeakIndices.push({ left: pTopL, right: pTopR });
+
+            // 3. High-Tensile Stay Cables (Harp / Fan arrangement)
+            const cableAnchorsCount = 8;
+            for (let c = 1; c <= cableAnchorsCount; c++) {
+                // Forward and backward cable anchor locations on the deck
+                const forwardIdx = Math.min(numSegments, Math.round(((pz - startZ) / segStep) + c * 1.8));
+                const backwardIdx = Math.max(0, Math.round(((pz - startZ) / segStep) - c * 1.8));
+
+                // Cable height along the tower head
+                const cableMastYL = points.length;
+                points.push({ x: -7, y: mastTopY + (c * 7), z: pz, size: 0.8 });
+                const cableMastYR = points.length;
+                points.push({ x: 7, y: mastTopY + (c * 7), z: pz, size: 0.8 });
+
+                // Connect cables to deck edges
+                lines.push([cableMastYL, leftDeckIndices[forwardIdx], "rgba(24,95,165,0.4)"]);
+                lines.push([cableMastYR, rightDeckIndices[forwardIdx], "rgba(24,95,165,0.4)"]);
+                lines.push([cableMastYL, leftDeckIndices[backwardIdx], "rgba(24,95,165,0.4)"]);
+                lines.push([cableMastYR, rightDeckIndices[backwardIdx], "rgba(24,95,165,0.4)"]);
+            }
         });
 
-        // Topographic site coordinates point cloud
-        for (let i = 0; i < 200; i++) {
-            points.push({
-                x: (Math.random() - 0.5) * 320,
-                y: 60 + Math.random() * 15,
-                z: (Math.random() - 0.5) * 320,
-                isParticle: true,
-            });
+        // 4. River Ground Elevation Grid & Geodetic Survey Benchmark Nodes
+        for (let gx = -180; gx <= 180; gx += 45) {
+            for (let gz = -240; gz <= 240; gz += 60) {
+                points.push({
+                    x: gx + (Math.random() - 0.5) * 8,
+                    y: 84 + (Math.random() - 0.5) * 4,
+                    z: gz + (Math.random() - 0.5) * 8,
+                    isParticle: true,
+                    color: "rgba(148,163,184,0.4)",
+                    size: 1.2,
+                });
+            }
         }
 
         return { points, lines };
     }, []);
 
+    // =========================================================================
+    // MODEL 2: CIVIC SKYSCRAPER COMPLEX (ALDER & STONE BENCHMARK)
+    // =========================================================================
+    const generateCivicGeometry = useCallback(() => {
+        const points: Point3D[] = [];
+        const lines: [number, number, string?][] = [];
+
+        // Main Skyscraper Tower
+        const floors = 24;
+        const towerWidth = 72;
+        const towerDepth = 60;
+        const floorHeight = 8.5;
+        const baseFloorY = 75;
+
+        const floorCornerIndices: number[][] = [];
+
+        for (let f = 0; f <= floors; f++) {
+            const y = baseFloorY - f * floorHeight;
+            // Floor setback taper at upper levels (floors 18+)
+            const setback = f > 18 ? (f - 18) * 2.2 : 0;
+            const w = (towerWidth - setback) / 2;
+            const d = (towerDepth - setback) / 2;
+
+            const c0 = points.length; // Front Left
+            points.push({ x: -w, y, z: -d, color: "#0d1b2e", size: 1.4 });
+            const c1 = points.length; // Front Right
+            points.push({ x: w, y, z: -d, color: "#0d1b2e", size: 1.4 });
+            const c2 = points.length; // Back Right
+            points.push({ x: w, y, z: d, color: "#0d1b2e", size: 1.4 });
+            const c3 = points.length; // Back Left
+            points.push({ x: -w, y, z: d, color: "#0d1b2e", size: 1.4 });
+
+            floorCornerIndices.push([c0, c1, c2, c3]);
+
+            // Perimeter Floor Slab Ring
+            lines.push([c0, c1, "rgba(13,27,46,0.6)"]);
+            lines.push([c1, c2, "rgba(13,27,46,0.6)"]);
+            lines.push([c2, c3, "rgba(13,27,46,0.6)"]);
+            lines.push([c3, c0, "rgba(13,27,46,0.6)"]);
+
+            // Intermediate vertical mullions across facade
+            const mFront = points.length;
+            points.push({ x: 0, y, z: -d, size: 0.8 });
+            const mBack = points.length;
+            points.push({ x: 0, y, z: d, size: 0.8 });
+            const mLeft = points.length;
+            points.push({ x: -w, y, z: 0, size: 0.8 });
+            const mRight = points.length;
+            points.push({ x: w, y, z: 0, size: 0.8 });
+
+            // Vertical Column Interlocks
+            if (f > 0) {
+                const prev = floorCornerIndices[f - 1];
+                lines.push([prev[0], c0, "rgba(13,27,46,0.75)"]);
+                lines.push([prev[1], c1, "rgba(13,27,46,0.75)"]);
+                lines.push([prev[2], c2, "rgba(13,27,46,0.75)"]);
+                lines.push([prev[3], c3, "rgba(13,27,46,0.75)"]);
+
+                // 4-Story Façade Diagrid Bracing (Mega-Trusses)
+                if ((f - 1) % 4 === 0 && f < floors) {
+                    lines.push([prev[0], c1, "rgba(24,95,165,0.4)"]);
+                    lines.push([prev[1], c0, "rgba(24,95,165,0.4)"]);
+                    lines.push([prev[3], c2, "rgba(24,95,165,0.4)"]);
+                    lines.push([prev[2], c3, "rgba(24,95,165,0.4)"]);
+                }
+            }
+        }
+
+        // Rooftop Communications & Mechanical Mast
+        const topY = baseFloorY - floors * floorHeight;
+        const mastBase = points.length;
+        points.push({ x: 0, y: topY, z: 0, size: 2 });
+        const mastTip = points.length;
+        points.push({ x: 0, y: topY - 36, z: 0, color: "#c88a22", size: 3 });
+        lines.push([mastBase, mastTip, "rgba(200,138,34,0.9)"]);
+
+        // Flanking Low-Rise Civic Pavilion Wing
+        const pBaseY = baseFloorY;
+        const pHeight = floorHeight * 5;
+        const pL0 = points.length;
+        points.push({ x: 50, y: pBaseY, z: -40, size: 1.2 });
+        const pL1 = points.length;
+        points.push({ x: 125, y: pBaseY, z: -40, size: 1.2 });
+        const pL2 = points.length;
+        points.push({ x: 125, y: pBaseY, z: 45, size: 1.2 });
+        const pL3 = points.length;
+        points.push({ x: 50, y: pBaseY, z: 45, size: 1.2 });
+
+        const pT0 = points.length;
+        points.push({ x: 50, y: pBaseY - pHeight, z: -40, size: 1.2 });
+        const pT1 = points.length;
+        points.push({ x: 125, y: pBaseY - pHeight, z: -40, size: 1.2 });
+        const pT2 = points.length;
+        points.push({ x: 125, y: pBaseY - pHeight, z: 45, size: 1.2 });
+        const pT3 = points.length;
+        points.push({ x: 50, y: pBaseY - pHeight, z: 45, size: 1.2 });
+
+        lines.push([pT0, pT1, "rgba(24,95,165,0.5)"]);
+        lines.push([pT1, pT2, "rgba(24,95,165,0.5)"]);
+        lines.push([pT2, pT3, "rgba(24,95,165,0.5)"]);
+        lines.push([pT3, pT0, "rgba(24,95,165,0.5)"]);
+        lines.push([pL0, pT0, "rgba(13,27,46,0.6)"]);
+        lines.push([pL1, pT1, "rgba(13,27,46,0.6)"]);
+        lines.push([pL2, pT2, "rgba(13,27,46,0.6)"]);
+        lines.push([pL3, pT3, "rgba(13,27,46,0.6)"]);
+
+        // Sky-bridge connection between tower and pavilion
+        const sbY = pBaseY - floorHeight * 3;
+        const sb0 = points.length;
+        points.push({ x: 36, y: sbY, z: -10, size: 1 });
+        const sb1 = points.length;
+        points.push({ x: 50, y: sbY, z: -10, size: 1 });
+        const sb2 = points.length;
+        points.push({ x: 50, y: sbY + 12, z: -10, size: 1 });
+        const sb3 = points.length;
+        points.push({ x: 36, y: sbY + 12, z: -10, size: 1 });
+        lines.push([sb0, sb1, "rgba(200,138,34,0.7)"]);
+        lines.push([sb1, sb2, "rgba(200,138,34,0.7)"]);
+        lines.push([sb2, sb3, "rgba(200,138,34,0.7)"]);
+        lines.push([sb3, sb0, "rgba(200,138,34,0.7)"]);
+
+        // Perspective Ground Grid (Alder & Stone Style)
+        for (let gx = -160; gx <= 160; gx += 32) {
+            for (let gz = -160; gz <= 160; gz += 32) {
+                points.push({
+                    x: gx,
+                    y: baseFloorY,
+                    z: gz,
+                    isParticle: true,
+                    color: "rgba(13,27,46,0.2)",
+                    size: 1.1,
+                });
+            }
+        }
+
+        return { points, lines };
+    }, []);
+
+    // Main 3D Render Loop
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -186,143 +353,206 @@ export function HeroArchitecturalCanvas() {
         if (!ctx) return;
 
         let animationFrameId: number;
-        let width = (canvas.width = canvas.parentElement?.clientWidth || 600);
-        let height = (canvas.height = canvas.parentElement?.clientHeight || 450);
+        let lastTime = performance.now();
 
-        const handleResize = () => {
-            if (!canvas.parentElement) return;
-            width = canvas.width = canvas.parentElement.clientWidth;
-            height = canvas.height = canvas.parentElement.clientHeight;
+        const resize = () => {
+            const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
         };
 
-        window.addEventListener("resize", handleResize);
+        resize();
+        window.addEventListener("resize", resize);
 
-        const { points, lines } =
-            model === "bridge" ? generateBridgeGeometry() : generateCivicGeometry();
+        const currentGeometry = model === "bridge" ? generateBridgeGeometry() : generateCivicGeometry();
 
-        const project = (p: Point3D, rx: number, ry: number) => {
-            const cosY = Math.cos(ry);
-            const sinY = Math.sin(ry);
-            const cosX = Math.cos(rx);
-            const sinX = Math.sin(rx);
+        const render = (now: number) => {
+            const dt = Math.min((now - lastTime) / 1000, 0.1);
+            lastTime = now;
 
-            const x1 = p.x * cosY + p.z * sinY;
-            const z1 = -p.x * sinY + p.z * cosY;
+            const rect = canvas.getBoundingClientRect();
+            const w = rect.width;
+            const h = rect.height;
 
-            const y2 = p.y * cosX - z1 * sinX;
-            const z2 = p.y * sinX + z1 * cosX;
+            ctx.clearRect(0, 0, w, h);
 
-            const fov = 440 / (440 + z2);
-            return {
-                x: width / 2 + x1 * fov,
-                y: height / 2 + y2 * fov,
-                fov,
-                z: z2,
-            };
-        };
-
-        const render = () => {
-            const rot = rotRef.current;
-            rot.x += (rot.targetX - rot.x) * 0.08;
-            rot.y += (rot.targetY - rot.y) * 0.08;
-
-            if (!rot.isDragging) {
-                rot.targetY += 0.0018; // Slow natural orbit
+            // Auto-orbit physics
+            if (isAutoSpin && !rotRef.current.isDragging) {
+                rotRef.current.targetY += dt * 0.12;
             }
 
-            ctx.clearRect(0, 0, width, height);
+            // Smooth rotational damping
+            rotRef.current.x += (rotRef.current.targetX - rotRef.current.x) * 0.12;
+            rotRef.current.y += (rotRef.current.targetY - rotRef.current.y) * 0.12;
 
-            // Draw clean subtle architectural grid
-            ctx.strokeStyle = "rgba(13, 27, 46, 0.035)";
-            ctx.lineWidth = 1;
-            const step = 32;
-            for (let x = 0; x < width; x += step) {
+            const cosX = Math.cos(rotRef.current.x);
+            const sinX = Math.sin(rotRef.current.x);
+            const cosY = Math.cos(rotRef.current.y);
+            const sinY = Math.sin(rotRef.current.y);
+
+            const fov = 380;
+            const cx = w * 0.52;
+            const cy = h * 0.54;
+
+            // Project 3D points to 2D screen
+            const projected = currentGeometry.points.map((p) => {
+                // Rotate around Y
+                const x1 = p.x * cosY + p.z * sinY;
+                const y1 = p.y;
+                const z1 = -p.x * sinY + p.z * cosY;
+
+                // Rotate around X
+                const x2 = x1;
+                const y2 = y1 * cosX - z1 * sinX;
+                const z2 = y1 * sinX + z1 * cosX + 380;
+
+                const scale = fov / (fov + z2);
+                return {
+                    x: cx + x2 * scale,
+                    y: cy + y2 * scale,
+                    scale,
+                    depth: z2,
+                    isParticle: p.isParticle,
+                    color: p.color,
+                    size: p.size,
+                };
+            });
+
+            // 1. Draw Lines with Depth Attenuation
+            currentGeometry.lines.forEach(([p1Idx, p2Idx, strokeColor]) => {
+                const p1 = projected[p1Idx];
+                const p2 = projected[p2Idx];
+                if (!p1 || !p2) return;
+
+                const alpha = Math.max(0.12, Math.min(0.85, 1 - (p1.depth + p2.depth) / 1400));
                 ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, height);
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.strokeStyle = strokeColor || `rgba(13, 27, 46, ${alpha})`;
+                ctx.lineWidth = Math.max(0.6, (p1.scale + p2.scale) * 0.85);
                 ctx.stroke();
-            }
-            for (let y = 0; y < height; y += step) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(width, y);
-                ctx.stroke();
-            }
+            });
 
-            const projected = points.map((p) => project(p, rot.x, rot.y));
+            // 2. Draw Simulated Bridge Traffic Pulses (When in Bridge mode)
+            if (model === "bridge") {
+                trafficRef.current.forEach((veh) => {
+                    veh.t += veh.speed;
+                    if (veh.t > 1) veh.t = 0;
+                    if (veh.t < 0) veh.t = 1;
 
-            // Render graphite structural lines
-            ctx.lineWidth = 1.15;
-            for (const [i1, i2] of lines) {
-                const p1 = projected[i1];
-                const p2 = projected[i2];
-                if (p1 && p2 && p1.fov > 0 && p2.fov > 0) {
-                    const depthAlpha = Math.max(0.18, Math.min(0.85, (p1.fov + p2.fov) * 0.5));
-                    ctx.strokeStyle = `rgba(13, 27, 46, ${depthAlpha * 0.85})`; // Deep graphite ink
+                    // Interpolate 3D position along bridge deck
+                    const deckLength = 540;
+                    const z = -deckLength / 2 + veh.t * deckLength;
+                    const y = -8 - Math.sin(veh.t * Math.PI) * 16;
+                    const x = veh.lane * 16;
+
+                    // Project 3D position
+                    const x1 = x * cosY + z * sinY;
+                    const y1 = y;
+                    const z1 = -x * sinY + z * cosY;
+
+                    const x2 = x1;
+                    const y2 = y1 * cosX - z1 * sinX;
+                    const z2 = y1 * sinX + z1 * cosX + 380;
+
+                    const scale = fov / (fov + z2);
+                    const sx = cx + x2 * scale;
+                    const sy = cy + y2 * scale;
+
+                    // Draw glowing vehicle node
                     ctx.beginPath();
-                    ctx.moveTo(p1.x, p1.y);
-                    ctx.lineTo(p2.x, p2.y);
-                    ctx.stroke();
-                }
-            }
-
-            // Render point-cloud survey nodes
-            for (let i = 0; i < projected.length; i++) {
-                const p = projected[i];
-                if (p && p.fov > 0) {
-                    const isParticle = points[i].isParticle;
-                    const r = isParticle ? 1.2 * p.fov : 2.2 * p.fov;
-                    // Muted architectural amber or charcoal nodes
-                    ctx.fillStyle = isParticle
-                        ? "rgba(200, 138, 34, 0.65)"
-                        : "rgba(13, 27, 46, 0.85)";
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, Math.max(0.7, r), 0, Math.PI * 2);
+                    ctx.arc(sx, sy, Math.max(1.5, scale * 3.5), 0, Math.PI * 2);
+                    ctx.fillStyle = veh.color;
                     ctx.fill();
-                }
+
+                    // Pulse ring
+                    ctx.beginPath();
+                    ctx.arc(sx, sy, Math.max(3, scale * 6), 0, Math.PI * 2);
+                    ctx.strokeStyle = veh.color === "#c88a22" ? "rgba(200,138,34,0.4)" : "rgba(24,95,165,0.4)";
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                });
             }
+
+            // 3. Draw Point Cloud & Joint Nodes
+            projected.forEach((p) => {
+                const radius = Math.max(0.8, (p.size || 1) * p.scale * 1.5);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+
+                if (p.isParticle) {
+                    ctx.fillStyle = p.color || "rgba(13, 27, 46, 0.25)";
+                } else {
+                    ctx.fillStyle = p.color || "#0d1b2e";
+                }
+                ctx.fill();
+            });
 
             animationFrameId = requestAnimationFrame(render);
         };
 
-        render();
+        animationFrameId = requestAnimationFrame(render);
 
         return () => {
+            window.removeEventListener("resize", resize);
             cancelAnimationFrame(animationFrameId);
-            window.removeEventListener("resize", handleResize);
         };
-    }, [model, generateBridgeGeometry, generateCivicGeometry]);
+    }, [model, isAutoSpin, generateBridgeGeometry, generateCivicGeometry]);
 
-    // Mouse handlers for dragging/orbiting
+    // Drag Orbit Handlers
     const handleMouseDown = (e: React.MouseEvent) => {
         rotRef.current.isDragging = true;
         rotRef.current.lastX = e.clientX;
         rotRef.current.lastY = e.clientY;
-        setIsInteracting(true);
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
         if (!rotRef.current.isDragging) return;
         const dx = e.clientX - rotRef.current.lastX;
         const dy = e.clientY - rotRef.current.lastY;
-        rotRef.current.targetY += dx * 0.006;
-        rotRef.current.targetX += dy * 0.006;
+        rotRef.current.targetY += dx * 0.007;
+        rotRef.current.targetX += dy * 0.007;
         rotRef.current.lastX = e.clientX;
         rotRef.current.lastY = e.clientY;
     };
 
     const handleMouseUp = () => {
         rotRef.current.isDragging = false;
-        setIsInteracting(false);
     };
 
-    const resetView = () => {
-        rotRef.current.targetX = 0.38;
-        rotRef.current.targetY = -0.55;
+    // Touch handlers for mobile devices
+    const handleTouchStart = (e: React.TouchEvent) => {
+        if (e.touches.length === 1) {
+            rotRef.current.isDragging = true;
+            rotRef.current.lastX = e.touches[0].clientX;
+            rotRef.current.lastY = e.touches[0].clientY;
+        }
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!rotRef.current.isDragging || e.touches.length !== 1) return;
+        const dx = e.touches[0].clientX - rotRef.current.lastX;
+        const dy = e.touches[0].clientY - rotRef.current.lastY;
+        rotRef.current.targetY += dx * 0.008;
+        rotRef.current.targetX += dy * 0.008;
+        rotRef.current.lastX = e.touches[0].clientX;
+        rotRef.current.lastY = e.touches[0].clientY;
     };
 
     return (
-        <div className="relative w-full h-[460px] lg:h-[520px] rounded-2xl overflow-hidden border border-slate-200 bg-[#FAF9F6] shadow-matte-md select-none group">
+        <div className="relative w-full h-[460px] sm:h-[540px] lg:h-[600px] rounded-3xl overflow-hidden bg-white/70 border border-slate-200/90 shadow-matte-lg select-none group">
+            {/* Fine Blueprint Millimeter Grid Watermark */}
+            <svg className="absolute inset-0 w-full h-full opacity-[0.06] pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="hero-3d-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+                        <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#0d1b2e" strokeWidth="0.5" />
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#hero-3d-grid)" />
+            </svg>
+
             {/* 3D Canvas */}
             <canvas
                 ref={canvasRef}
@@ -330,68 +560,92 @@ export function HeroArchitecturalCanvas() {
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
-                className="w-full h-full cursor-grab active:cursor-grabbing block"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleMouseUp}
+                className="w-full h-full cursor-grab active:cursor-grabbing touch-none"
             />
 
-            {/* Top Bar: Model Selector Switcher (Both Models!) */}
-            <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10 pointer-events-none">
-                {/* Segmented Model Switcher */}
-                <div className="pointer-events-auto inline-flex items-center p-1 rounded-full bg-white/90 backdrop-blur-md border border-slate-200/90 shadow-sm">
+            {/* Top Bar: Dual Model Switcher (Capsule Pill from Image 2) */}
+            <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none">
+                <div className="pointer-events-auto inline-flex items-center gap-1 p-1 bg-white/95 backdrop-blur-md rounded-full border border-slate-200/90 shadow-matte-sm">
                     <button
                         onClick={() => setModel("bridge")}
-                        className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-wider uppercase transition-all ${
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
                             model === "bridge"
-                                ? "bg-[#0d1b2e] text-white shadow-sm"
+                                ? "bg-[#0d1b2e] text-white shadow-xs"
                                 : "text-slate-600 hover:text-[#0d1b2e]"
                         }`}
                     >
-                        Expressway Truss
+                        Cable-Stayed Bridge
                     </button>
                     <button
                         onClick={() => setModel("civic")}
-                        className={`px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-wider uppercase transition-all ${
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
                             model === "civic"
-                                ? "bg-[#0d1b2e] text-white shadow-sm"
+                                ? "bg-[#0d1b2e] text-white shadow-xs"
                                 : "text-slate-600 hover:text-[#0d1b2e]"
                         }`}
                     >
-                        Civic Complex
+                        Civic Skyscraper
                     </button>
                 </div>
 
-                {/* Reset View Button */}
-                <button
-                    onClick={resetView}
-                    className="pointer-events-auto w-8 h-8 rounded-full bg-white/90 backdrop-blur-md border border-slate-200 flex items-center justify-center text-slate-600 hover:text-[#0d1b2e] hover:shadow-sm transition-all"
-                    title="Reset Isometric Perspective"
-                >
-                    <RotateCcw size={13} />
-                </button>
+                {/* Orbit & Auto-spin Controls */}
+                <div className="pointer-events-auto flex items-center gap-2">
+                    <button
+                        onClick={() => setIsAutoSpin(!isAutoSpin)}
+                        className="w-8 h-8 rounded-full bg-white/95 backdrop-blur-md border border-slate-200 flex items-center justify-center text-slate-700 hover:text-[#0d1b2e] shadow-matte-sm cursor-pointer transition-colors"
+                        title={isAutoSpin ? "Pause Auto-orbit" : "Resume Auto-orbit"}
+                        aria-label="Toggle auto-orbit"
+                    >
+                        {isAutoSpin ? <Pause size={13} /> : <Play size={13} />}
+                    </button>
+                    <button
+                        onClick={() => {
+                            rotRef.current.targetX = 0.32;
+                            rotRef.current.targetY = -0.65;
+                        }}
+                        className="w-8 h-8 rounded-full bg-white/95 backdrop-blur-md border border-slate-200 flex items-center justify-center text-slate-700 hover:text-[#0d1b2e] shadow-matte-sm cursor-pointer transition-colors"
+                        title="Reset Camera View"
+                        aria-label="Reset view"
+                    >
+                        <RotateCcw size={13} />
+                    </button>
+                </div>
             </div>
 
-            {/* Bottom-Left: Technical Mathematical & CAD Formula HUD (from Image 2) */}
-            <div className="absolute bottom-5 left-5 pointer-events-none z-10 p-3.5 rounded-xl bg-white/85 backdrop-blur-md border border-slate-200 shadow-sm max-w-xs space-y-1">
-                <div className="flex items-center justify-between text-[10px] font-mono-tech font-bold uppercase tracking-wider text-[#185FA5]">
-                    <span>{model === "bridge" ? "IRC:SP:84-2014 COMPLIANT" : "NBC 2016 STRUCTURAL SPEC"}</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#c88a22]"></span>
+            {/* Bottom-left: Real CAD Engineering Telemetry HUD (from Reference Image 2) */}
+            <div className="absolute bottom-4 left-4 pointer-events-none flex flex-col gap-1 font-mono text-[10px] text-slate-500 bg-white/90 backdrop-blur-md px-3.5 py-2.5 rounded-xl border border-slate-200/80 shadow-matte-sm">
+                <div className="flex items-center gap-2 text-[#0d1b2e] font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#185FA5] animate-ping" />
+                    <span>3D ISOMETRIC VECTOR ENGINE</span>
                 </div>
-                <div className="text-[11px] font-mono-tech text-[#0d1b2e] font-semibold">
-                    {model === "bridge" ? "A(x) = ∫ σ(x) dx · ΔL = FL / AE" : "ΣF_z = 0 · M_max = qL² / 8"}
+                <div className="text-slate-400 text-[9px] tracking-tight">
+                    {model === "bridge" ? (
+                        <>
+                            <span>MODEL: 4-LANE CABLE-STAYED FLYOVER</span>
+                            <br />
+                            <span>CODE: IRC:SP:84-2014 · SPAN: 540m · LOAD: 70R</span>
+                        </>
+                    ) : (
+                        <>
+                            <span>MODEL: 24-STORY CIVIC COMPLEX</span>
+                            <br />
+                            <span>CODE: NBC-2016 · CORE: RCC SHEAR · H: 102m</span>
+                        </>
+                    )}
                 </div>
-                <div className="text-[10px] font-mono-tech text-slate-500">
-                    COORDINATES: 13.0827° N, 80.2707° E · TN
+                <div className="text-[#c88a22] text-[9px] font-semibold mt-0.5">
+                    LAT 13.0827° N / LON 80.2707° E · CHENNAI
                 </div>
             </div>
 
-            {/* Interactive Drag Hint */}
-            <div className="absolute bottom-5 right-5 pointer-events-none z-10 hidden sm:flex items-center gap-1.5 text-[10px] font-mono-tech uppercase tracking-wider text-slate-400 bg-white/70 px-2.5 py-1 rounded-full border border-slate-200">
+            {/* Bottom-right: Interactive Cursor Instruction Badge */}
+            <div className="absolute bottom-4 right-4 pointer-events-none hidden sm:flex items-center gap-2 font-mono text-[9px] text-slate-400 bg-white/80 backdrop-blur-xs px-3 py-1.5 rounded-full border border-slate-200/60">
                 <Compass size={11} className="text-[#185FA5]" />
-                <span>Drag to Orbit 3D Mesh</span>
+                <span>DRAG TO ORBIT 360°</span>
             </div>
-
-            {/* Corner Alignment Marks */}
-            <div className="absolute top-2 left-2 text-slate-300 font-mono-tech text-[10px] select-none pointer-events-none">+ L01</div>
-            <div className="absolute bottom-2 right-2 text-slate-300 font-mono-tech text-[10px] select-none pointer-events-none">+ R01</div>
         </div>
     );
 }

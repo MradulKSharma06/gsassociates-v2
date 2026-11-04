@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/Badge";
+import { Tilt3DCard } from "@/components/ui/Tilt3DCard";
 import { Project, projectCategories } from "@/data/projects";
 import { MapPin, Building2, ArrowRight, Clock, Search, Layers, CheckCircle2 } from "lucide-react";
 
@@ -149,11 +150,13 @@ export function ProjectsClient({ initialProjects }: Props) {
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.96 }}
                                 transition={{ duration: 0.22 }}
+                                className="h-full"
                             >
-                                <Link
-                                    href={`/projects/${project.slug}`}
-                                    className="group flex flex-col h-full rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-matte-sm hover:shadow-matte-md hover:border-slate-300 transition-all duration-300"
-                                >
+                                <Tilt3DCard maxTilt={5} className="h-full">
+                                    <Link
+                                        href={`/projects/${project.slug}`}
+                                        className="group flex flex-col h-full rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-matte-sm hover:shadow-matte-md hover:border-slate-300 transition-all duration-300"
+                                    >
                                     {/* Card Top Banner with Watermark & CAD Line Pattern */}
                                     <div className="relative h-40 p-5 bg-[#F4F5F7] border-b border-slate-200/80 flex flex-col justify-between overflow-hidden">
                                         {/* Architectural Blueprint CAD Grid Pattern */}
@@ -271,7 +274,8 @@ export function ProjectsClient({ initialProjects }: Props) {
                                         </div>
                                     </div>
                                 </Link>
-                            </motion.div>
+                            </Tilt3DCard>
+                        </motion.div>
                         ))}
                     </AnimatePresence>
                 </motion.div>

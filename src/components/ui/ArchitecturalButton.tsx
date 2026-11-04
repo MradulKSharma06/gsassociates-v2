@@ -27,9 +27,9 @@ export function ArchitecturalButton({
     disabled = false,
 }: ButtonProps) {
     const sizeClasses = {
-        sm: "px-4 py-2 text-[11px] tracking-wider",
-        md: "px-6 py-3 text-xs tracking-wider",
-        lg: "px-8 py-4 text-xs font-bold tracking-widest",
+        sm: "px-3.5 py-1.5 sm:px-4 sm:py-2 text-[10px] sm:text-[11px] tracking-wider",
+        md: "px-4.5 py-2 sm:px-6 sm:py-2.5 text-[11px] sm:text-xs tracking-wider",
+        lg: "px-5 py-2.5 sm:px-7 sm:py-3 text-xs font-bold tracking-wider",
     };
 
     const variantClasses = {
@@ -46,7 +46,7 @@ export function ArchitecturalButton({
     };
 
     const baseClass = cn(
-        "inline-flex items-center justify-center gap-2 rounded-full font-bold uppercase transition-all select-none cursor-pointer",
+        "inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full font-bold uppercase transition-all select-none cursor-pointer whitespace-nowrap shrink-0",
         sizeClasses[size],
         variantClasses[variant],
         disabled && "opacity-50 cursor-not-allowed pointer-events-none",

@@ -39,24 +39,24 @@ export function CtaBanner() {
                         </div>
                         <h2
                             style={{ fontFamily: "var(--font-condensed)" }}
-                            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-white leading-tight"
+                            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-white leading-[1.08] text-left"
                         >
-                            Have a Major Infrastructure{" "}
-                            <span className="text-[#8aadcc]">Package in Mind?</span>
+                            Have an Infrastructure
+                            <span className="block text-[#8aadcc] mt-1">Package in Mind?</span>
                         </h2>
-                        <p className="mt-4 text-sm sm:text-base text-slate-300 font-normal leading-relaxed">
+                        <p className="mt-4 text-sm sm:text-base text-slate-300 font-normal leading-relaxed text-left max-w-lg">
                             From state highway tenders to turnkey civic facilities — consult directly with our Chief Engineers and project management team. Responsive within one business day.
                         </p>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-4 lg:shrink-0">
-                        <ArchitecturalButton href="/contact" variant="white" size="lg">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto lg:shrink-0">
+                        <ArchitecturalButton href="/contact" variant="white" size="lg" className="justify-center whitespace-nowrap">
                             Initiate Tender Inquiry
                             <ArrowRight size={14} className="ml-1" />
                         </ArchitecturalButton>
                         <a
                             href="tel:+914412345678"
-                            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-xs font-mono uppercase tracking-wider text-white/90 border border-white/20 bg-white/5 hover:bg-white/10 hover:border-white/40 transition-all select-none"
+                            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full text-xs font-mono uppercase tracking-wider text-white/90 border border-white/20 bg-white/5 hover:bg-white/10 hover:border-white/40 transition-all select-none whitespace-nowrap"
                         >
                             <Phone size={13} className="text-[#c88a22]" />
                             +91 44 1234 5678

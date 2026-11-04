@@ -19,10 +19,10 @@ function StatItem({
     });
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col p-4 rounded-xl hover:bg-[#FAF9F6] transition-all group cursor-default">
             <div
                 style={{ fontFamily: "var(--font-condensed)" }}
-                className="text-4xl sm:text-5xl font-extrabold text-[#0d1b2e] tracking-tight leading-none"
+                className="text-4xl sm:text-5xl font-extrabold text-[#0d1b2e] tracking-tight leading-none group-hover:text-[#185FA5] transition-colors"
             >
                 {stat.prefix && <span className="text-[#185FA5] text-[0.7em] mr-0.5">{stat.prefix}</span>}
                 {value}

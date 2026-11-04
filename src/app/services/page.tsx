@@ -4,6 +4,7 @@ import { CtaBanner } from "@/components/home/CtaBanner";
 import { services } from "@/data/services";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import { ArchitecturalButton } from "@/components/ui/ArchitecturalButton";
+import { ServiceBlueprintGraphic } from "@/components/services/ServiceBlueprintGraphic";
 
 export const metadata: Metadata = {
     title: "Services",
@@ -15,7 +16,7 @@ export default function ServicesPage() {
     return (
         <>
             {/* Architectural Page Hero */}
-            <section className="relative overflow-hidden section-padding-sm bg-[#FAF9F6] border-b border-slate-200/80 blueprint-grid">
+            <section className="relative overflow-hidden pt-6 pb-12 sm:pt-10 sm:pb-16 bg-[#FAF9F6] border-b border-slate-200/80 blueprint-grid">
                 <div className="container-site relative z-10">
                     <SectionLabel>Institutional Capabilities</SectionLabel>
                     <h1
@@ -46,7 +47,7 @@ export default function ServicesPage() {
                                 }`}
                             >
                                 {/* Left/Side Panel */}
-                                <div className="lg:col-span-4 p-8 bg-[#FAF9F6] border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col justify-between">
+                                <div className="lg:col-span-4 p-8 bg-[#FAF9F6] border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col justify-between relative overflow-hidden">
                                     <div>
                                         <div className="text-[10px] font-mono-tech font-bold uppercase tracking-widest text-[#185FA5] mb-2">
                                             {svc.category}
@@ -58,7 +59,11 @@ export default function ServicesPage() {
                                             {svc.title}
                                         </h2>
                                     </div>
-                                    <div className="mt-8 pt-4 border-t border-slate-200 flex items-center justify-between text-xs font-mono-tech text-slate-500">
+
+                                    {/* Architectural CAD Blueprint Schematic (Fills the beige area with engineering graphics) */}
+                                    <ServiceBlueprintGraphic category={svc.category || svc.title} />
+
+                                    <div className="mt-4 pt-4 border-t border-slate-200 flex items-center justify-between text-xs font-mono-tech text-slate-500">
                                         <span>SPEC: IRC / PWD</span>
                                         <span className="text-[#c88a22] font-bold">CLASS A</span>
                                     </div>
@@ -89,11 +94,11 @@ export default function ServicesPage() {
                                         </div>
                                     </div>
 
-                                    <div className="pt-5 border-t border-slate-100 flex items-center justify-between">
+                                    <div className="pt-5 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                         <span className="text-xs text-slate-500 font-mono-tech">
                                             Available for State &amp; Central Tenders
                                         </span>
-                                        <ArchitecturalButton href="/contact" variant="wireframe" size="sm">
+                                        <ArchitecturalButton href="/contact" variant="wireframe" size="sm" className="w-fit">
                                             <span>Request Specifications</span>
                                             <ArrowRight size={12} />
                                         </ArchitecturalButton>

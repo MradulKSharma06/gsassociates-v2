@@ -33,7 +33,7 @@ export default function ContactPage() {
     return (
         <>
             {/* Architectural Page Hero */}
-            <section className="relative overflow-hidden section-padding-sm bg-[#FAF9F6] border-b border-slate-200/80 blueprint-grid">
+            <section className="relative overflow-hidden pt-6 pb-12 sm:pt-10 sm:pb-16 bg-[#FAF9F6] border-b border-slate-200/80 blueprint-grid">
                 <div className="container-site relative z-10">
                     <SectionLabel>Institutional Contact</SectionLabel>
                     <h1
